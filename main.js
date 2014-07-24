@@ -1,8 +1,15 @@
 $(document).ready(function() {
+    var top_pages_c = $('div#top-pages');
     var top_pages_e = $('div#top-pages .top-pages-wrapper');
+    var apps_c = $('div#apps');
     var apps_e = $('div#apps .apps-wrapper');
 
     // bind live events
+    $(window).resize(function() {
+        center_top_pages();
+        center_apps();
+    });
+
     apps_e.on('click', 'div.app', function() {
         var properties = $(this).data('properties');
 
@@ -31,6 +38,9 @@ $(document).ready(function() {
         }
 
         top_pages_e.append('<div class="clear-both"></div>');
+
+        center_top_pages();
+        top_pages_e.fadeIn(60);
     });
 
     // fetch apps and extensions
@@ -64,6 +74,10 @@ $(document).ready(function() {
         }
 
         apps_e.append('<div class="clear-both"></div>');
+
+        center_apps();
+        apps_e.fadeIn(60);
+
         console.log(result);
     });
 
@@ -110,5 +124,23 @@ $(document).ready(function() {
         } else {
             return do_the_math(app.name);
         }
+    }
+
+    function center_top_pages() {
+        var container_w = top_pages_c.width();
+        var site_w = $('div.site', top_pages_c).outerWidth();
+        var row_elements_n = Math.floor(container_w / site_w);
+        var blank_space = container_w - (site_w * row_elements_n);
+
+        top_pages_e.css({'margin-left': (blank_space / 2)});
+    }
+
+    function center_apps() {
+        var container_w = apps_c.width();
+        var app_w = $('div.app', apps_c).outerWidth();
+        var row_elements_n = Math.floor(container_w / app_w);
+        var blank_space = container_w - (app_w * row_elements_n);
+
+        apps_e.css({'margin-left': (blank_space / 2)});
     }
 });

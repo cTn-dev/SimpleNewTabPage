@@ -30,10 +30,13 @@ a:hover {
 }
 #top-pages {
     width: 50%;
-    margin: auto;
+    min-width: 800px;
 
-    border: 1px solid red;
+    margin: auto;
 }
+    #top-pages .top-pages-wrapper {
+        display: none;
+    }
     #top-pages .title {
         padding: 0 0 5px 0;
 
@@ -49,8 +52,6 @@ a:hover {
         height: 20px;
 
         margin: 0 0 5px 0;
-
-        border: 1px solid green;
     }
     #top-pages .site img {
         float: left;
@@ -64,11 +65,14 @@ a:hover {
     }
 #apps {
     width: 50%;
+    min-width: 800px;
+
     margin: auto;
     margin-top: 50px;
-
-    border: 1px solid red;
 }
+    #apps .apps-wrapper {
+        display: none;
+    }
     #apps .title {
         padding: 0 0 5px 0;
 
@@ -82,8 +86,6 @@ a:hover {
         height: 155px;
 
         text-align: center;
-
-        border: 1px solid green;
     }
     #apps .app .wrapper {
         width: 134px;
