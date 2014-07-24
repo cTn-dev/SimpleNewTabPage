@@ -1,0 +1,109 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    list-style: none;
+    outline: none;
+}
+html, body {
+    height: 100%;
+}
+body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-size: 14px;
+    color: #303030;
+    -webkit-text-size-adjust: 100%;
+}
+a {
+    text-decoration: none;
+    color: black;
+}
+a:hover {
+}
+.clear-both {
+    clear: both;
+}
+
+#main-wrapper {
+    /* temporary */
+    padding-top: 100px;
+}
+#top-pages {
+    width: 50%;
+    margin: auto;
+
+    border: 1px solid red;
+}
+    #top-pages .title {
+        padding: 0 0 5px 0;
+
+        font-weight: bold;
+        text-align: center;
+        /* border-bottom: 1px dashed silver; */
+    }
+    #top-pages .site {
+        display: block;
+        float: left;
+
+        width: 180px;
+        height: 20px;
+
+        margin: 0 0 5px 0;
+
+        border: 1px solid green;
+    }
+    #top-pages .site img {
+        float: left;
+        margin: 3px 5px 0 0;
+    }
+    #top-pages a {
+        color: #585858;
+    }
+    #top-pages a:hover {
+        color: black;
+    }
+#apps {
+    width: 50%;
+    margin: auto;
+    margin-top: 50px;
+
+    border: 1px solid red;
+}
+    #apps .title {
+        padding: 0 0 5px 0;
+
+        font-weight: bold;
+        text-align: center;
+        /* border-bottom: 1px dashed silver; */
+    }
+    #apps .app {
+        float: left;
+        width: 155px;
+        height: 155px;
+
+        text-align: center;
+
+        border: 1px solid green;
+    }
+    #apps .app .wrapper {
+        width: 134px;
+        height: 150px;
+
+        margin: auto;
+    }
+    #apps .app .wrapper:hover {
+        cursor: pointer;
+    }
+    #apps .app img {
+        display: block;
+        margin: auto;
+
+        width: 128px;
+        height: 128px;
+    }
+    #apps .app img.disabled {
+        opacity: 0.75;
+        -webkit-filter: grayscale(1.0);
+    }
+    #apps .app span {
+    }

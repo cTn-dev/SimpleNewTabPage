@@ -1,0 +1,20 @@
+{
+    "manifest_version": 2,
+    "minimum_chrome_version": "36",
+    "version": "0.0.1",
+
+    "author": "cTn",
+    "name": "Simple New Tab Page",
+
+    "chrome_url_overrides": {
+        "newtab": "main.html"
+    },
+
+    "permissions": [
+        "topSites",
+        "management",
+        "tabs",
+        "storage",
+        "chrome://favicon/"
+    ]
+}
