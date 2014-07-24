@@ -88,6 +88,9 @@ a:hover {
         top: 0;
 
         text-align: center;
+
+        -webkit-transition: margin 0.5s;
+        z-index: 1;
     }
     #apps .app .wrapper {
         width: 134px;
@@ -110,4 +113,7 @@ a:hover {
         -webkit-filter: grayscale(1.0);
     }
     #apps .app span {
+    }
+    #apps .dragging {
+        z-index: 100;
     }
