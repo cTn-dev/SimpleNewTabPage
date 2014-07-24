@@ -95,7 +95,13 @@ $(document).ready(function() {
     });
 
     chrome.management.onUninstalled.addListener(function(id) {
-        console.log(id);
+        var apps = $('.app', apps_e);
+
+        for (var i = 0; i < apps.length; i++) {
+            if (id == $(apps[i]).data('properties').id) {
+                $(apps[i]).remove();
+            }
+        }
     });
 
     chrome.management.onEnabled.addListener(function(info) {
