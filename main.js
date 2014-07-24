@@ -11,12 +11,13 @@ $(document).ready(function() {
     });
 
     apps_e.on('click', 'div.app', function() {
-        var properties = $(this).data('properties');
+        if (!$(this).hasClass('dragging')) {
+            var properties = $(this).data('properties');
 
-        if (properties.enabled) {
-            chrome.management.launchApp(properties.id);
+            if (properties.enabled) {
+                chrome.management.launchApp(properties.id);
+            }
         }
-
         return false;
     });
 

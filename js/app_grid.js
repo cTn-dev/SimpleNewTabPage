@@ -36,11 +36,31 @@ var appGrid = new function () {
 
         var position = {'vertical': slot.height * Math.floor(occupied_slots / slots_per_line), 'horizontal': slot.width * (occupied_slots % slots_per_line)};
 
-        app.css({'margin-top': position.vertical, 'margin-left': position.horizontal});
+        app.css({'margin-left': position.horizontal, 'margin-top': position.vertical});
     };
 
     this.bindDraggable = function (app) {
-        // TODO
+        app.mousedown(function (e) {
+            var element = $(this);
+            var window_e = $(window);
+            var mouse_init_pos = {'left': e.pageX, 'top': e.pageY};
+            var element_init_pos = {'left': parseInt(element.css('left')), 'top': parseInt(element.css('top'))};
+
+            window_e.mousemove(function(e) {
+                e.preventDefault();
+
+                element.addClass('dragging');
+                element.css({'left': element_init_pos.left + e.pageX - mouse_init_pos.left, 'top': element_init_pos.top + e.pageY - mouse_init_pos.top});
+            });
+
+            window_e.mouseup(function(e) {
+                window_e.unbind('mousemove mouseup');
+
+                setTimeout(function() {
+                    element.removeClass('dragging');
+                }, 10);
+            });
+        });
     };
 
     this.helpers = new function () {

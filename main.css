@@ -42,7 +42,6 @@ a:hover {
 
         font-weight: bold;
         text-align: center;
-        /* border-bottom: 1px dashed silver; */
     }
     #top-pages .site {
         display: block;
@@ -64,30 +63,29 @@ a:hover {
         color: black;
     }
 #apps {
-    position: relative;
-
     width: 50%;
     min-width: 800px;
-    height: 325px;
 
     margin: auto;
     margin-top: 50px;
-    overflow: hidden;
 }
     #apps .apps-wrapper {
         display: none;
+        position: relative;
     }
     #apps .title {
         padding: 0 0 5px 0;
 
         font-weight: bold;
         text-align: center;
-        /* border-bottom: 1px dashed silver; */
     }
     #apps .app {
         position: absolute;
         width: 155px;
         height: 155px;
+
+        left: 0;
+        top: 0;
 
         text-align: center;
     }
