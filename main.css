@@ -64,11 +64,15 @@ a:hover {
         color: black;
     }
 #apps {
+    position: relative;
+
     width: 50%;
     min-width: 800px;
+    height: 325px;
 
     margin: auto;
     margin-top: 50px;
+    overflow: hidden;
 }
     #apps .apps-wrapper {
         display: none;
@@ -81,7 +85,7 @@ a:hover {
         /* border-bottom: 1px dashed silver; */
     }
     #apps .app {
-        float: left;
+        position: absolute;
         width: 155px;
         height: 155px;
 

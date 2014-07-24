@@ -59,19 +59,17 @@ $(document).ready(function() {
 
         // generate app shortcuts
         for (var i = 0; i < result.length; i++) {
-            create_app(result[i]);
+            appGrid.addApp(result[i]);
         }
 
         center_apps();
         apps_e.fadeIn(60);
-
-        console.log(result);
     });
 
     // take care of management events
     chrome.management.onInstalled.addListener(function(info) {
         if (info.isApp) {
-            create_app(info);
+            appGrid.addApp(info);
         }
     });
 
@@ -110,65 +108,6 @@ $(document).ready(function() {
     });
 
 
-    // shared functions
-    function get_icon(iconArr) {
-        var len = iconArr.length;
-
-        if (len > 1) {
-            var best_size = 0;
-            var best_size_index = 0;
-
-            for (var i = 0; i < len; i++) {
-                if (iconArr[i].size > best_size) {
-                    best_size = iconArr[i].size;
-                    best_size_index = i;
-                }
-            }
-
-            return iconArr[best_size_index].url;
-        } else {
-            return iconArr[0].url;
-        }
-    }
-
-    function shorten_name(app) {
-        function do_the_math(name) {
-            if (name.length < 19) {
-                return name;
-            } else {
-                var short_name = name.slice(0, 19);
-                return short_name + '...';
-            }
-        }
-
-        if (app.shortName) {
-            return do_the_math(app.shortName);
-        } else {
-            return do_the_math(app.name);
-        }
-    }
-
-    function create_app(data) {
-        function is_enabled(enabled) {
-            if (!enabled) {
-                return 'disabled';
-            } else {
-                return '';
-            }
-        }
-
-        var app =
-            $('<div class="app" title="' + data.name + '"> \
-                <div class="wrapper">\
-                    <img class="' + is_enabled(data.enabled) + '" src="' + get_icon(data.icons) + '" />\
-                    <span>' + shorten_name(data) + '</span>\
-                </div>\
-            </div>');
-
-        app.data('properties', data);
-        $('.clear-both', apps_e).before(app);
-    }
-
     function center_top_pages() {
         var container_w = top_pages_c.width();
         var site_w = $('div.site', top_pages_c).outerWidth();
@@ -179,11 +118,13 @@ $(document).ready(function() {
     }
 
     function center_apps() {
+        /*
         var container_w = apps_c.width();
         var app_w = $('div.app', apps_c).outerWidth();
         var row_elements_n = Math.floor(container_w / app_w);
         var blank_space = container_w - (app_w * row_elements_n);
 
         apps_e.css({'margin-left': (blank_space / 2)});
+        */
     }
 });
