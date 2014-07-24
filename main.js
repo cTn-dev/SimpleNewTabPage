@@ -34,10 +34,8 @@ $(document).ready(function() {
                     <img src="chrome://favicon/' + result[i].url + '" alt=""/><a href="' + result[i].url + '" title="' + result[i].title + '">' + short_name + '</a>\
                 </div>');
 
-            top_pages_e.append(site);
+            $('.clear-both', top_pages_e).before(site);
         }
-
-        top_pages_e.append('<div class="clear-both"></div>');
 
         center_top_pages();
         top_pages_e.fadeIn(60);
@@ -60,28 +58,9 @@ $(document).ready(function() {
         });
 
         // generate app shortcuts
-        function is_enabled(enabled) {
-            if (!enabled) {
-                return 'disabled';
-            } else {
-                return '';
-            }
-        }
-
         for (var i = 0; i < result.length; i++) {
-            var app =
-                $('<div class="app" title="' + result[i].name + '"> \
-                    <div class="wrapper">\
-                        <img class="' + is_enabled(result[i].enabled) + '" src="' + get_icon(result[i].icons) + '" />\
-                        <span>' + shorten_name(result[i]) + '</span>\
-                    </div>\
-                </div>');
-
-            app.data('properties', result[i]);
-            apps_e.append(app);
+            create_app(result[i]);
         }
-
-        apps_e.append('<div class="clear-both"></div>');
 
         center_apps();
         apps_e.fadeIn(60);
@@ -91,7 +70,9 @@ $(document).ready(function() {
 
     // take care of management events
     chrome.management.onInstalled.addListener(function(info) {
-        console.log(info);
+        if (info.isApp) {
+            create_app(info);
+        }
     });
 
     chrome.management.onUninstalled.addListener(function(id) {
@@ -165,6 +146,27 @@ $(document).ready(function() {
         } else {
             return do_the_math(app.name);
         }
+    }
+
+    function create_app(data) {
+        function is_enabled(enabled) {
+            if (!enabled) {
+                return 'disabled';
+            } else {
+                return '';
+            }
+        }
+
+        var app =
+            $('<div class="app" title="' + data.name + '"> \
+                <div class="wrapper">\
+                    <img class="' + is_enabled(data.enabled) + '" src="' + get_icon(data.icons) + '" />\
+                    <span>' + shorten_name(data) + '</span>\
+                </div>\
+            </div>');
+
+        app.data('properties', data);
+        $('.clear-both', apps_e).before(app);
     }
 
     function center_top_pages() {
