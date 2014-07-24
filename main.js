@@ -60,6 +60,14 @@ $(document).ready(function() {
         });
 
         // generate app shortcuts
+        function is_enabled(enabled) {
+            if (!enabled) {
+                return 'disabled';
+            } else {
+                return '';
+            }
+        }
+
         for (var i = 0; i < result.length; i++) {
             var app =
                 $('<div class="app" title="' + result[i].name + '"> \
@@ -81,14 +89,41 @@ $(document).ready(function() {
         console.log(result);
     });
 
-    function is_enabled(enabled) {
-        if (!enabled) {
-            return 'disabled';
-        } else {
-            return '';
-        }
-    }
+    // take care of management events
+    chrome.management.onInstalled.addListener(function(info) {
+        console.log(info);
+    });
 
+    chrome.management.onUninstalled.addListener(function(id) {
+        console.log(id);
+    });
+
+    chrome.management.onEnabled.addListener(function(info) {
+        var apps = $('.app', apps_e);
+
+        for (var i = 0; i < apps.length; i++) {
+            if (info.id == $(apps[i]).data('properties').id) {
+                $('img', apps[i]).removeClass('disabled');
+                $(apps[i]).data('properties', info);
+                break;
+            }
+        }
+    });
+
+    chrome.management.onDisabled.addListener(function(info) {
+        var apps = $('.app', apps_e);
+
+        for (var i = 0; i < apps.length; i++) {
+            if (info.id == $(apps[i]).data('properties').id) {
+                $('img', apps[i]).addClass('disabled');
+                $(apps[i]).data('properties', info);
+                break;
+            }
+        }
+    });
+
+
+    // shared functions
     function get_icon(iconArr) {
         var len = iconArr.length;
 
