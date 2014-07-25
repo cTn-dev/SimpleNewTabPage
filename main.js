@@ -12,11 +12,7 @@ $(document).ready(function() {
 
     apps_e.on('click', 'div.app', function() {
         if (!$(this).hasClass('dragging')) {
-            var properties = $(this).data('properties');
-
-            if (properties.enabled) {
-                chrome.management.launchApp(properties.id);
-            }
+            chrome.management.launchApp($(this).attr('id'));
         }
         return false;
     });

@@ -6,7 +6,7 @@ var appGrid = new function () {
     this.addApp = function (data) {
         // create element
         var app =
-            $('<div class="app" title="' + data.name + '"> \
+            $('<div id="' + data.id + '" class="app" title="' + data.name + '"> \
                 <div class="wrapper">\
                     <img class="' + this.helpers.isAppEnabled(data.enabled) + '" src="' + this.helpers.getIcon(data.icons) + '" />\
                     <span>' + this.helpers.shortenName(data) + '</span>\
@@ -22,12 +22,7 @@ var appGrid = new function () {
         // save reference in grid array
         this.grid.push({
             'initial_position': position,
-            'live_position': {
-                'left': 0,
-                'top':  0,
-                'x':    0,
-                'y':    0
-            },
+            'live_position': JSON.parse(JSON.stringify(position)),
             'data':     data,
             'element':  app
         });
