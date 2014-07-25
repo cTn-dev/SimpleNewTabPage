@@ -65,12 +65,15 @@ $(document).ready(function() {
 
     // take care of management events
     chrome.management.onInstalled.addListener(function(info) {
+        /*
         if (info.isApp) {
             appGrid.addApp(info);
         }
+        */
     });
 
     chrome.management.onUninstalled.addListener(function(id) {
+        /*
         var apps = $('.app', apps_e);
 
         for (var i = 0; i < apps.length; i++) {
@@ -78,9 +81,11 @@ $(document).ready(function() {
                 $(apps[i]).remove();
             }
         }
+        */
     });
 
     chrome.management.onEnabled.addListener(function(info) {
+        /*
         var apps = $('.app', apps_e);
 
         for (var i = 0; i < apps.length; i++) {
@@ -90,9 +95,11 @@ $(document).ready(function() {
                 break;
             }
         }
+        */
     });
 
     chrome.management.onDisabled.addListener(function(info) {
+        /*
         var apps = $('.app', apps_e);
 
         for (var i = 0; i < apps.length; i++) {
@@ -102,6 +109,7 @@ $(document).ready(function() {
                 break;
             }
         }
+        */
     });
 
 
