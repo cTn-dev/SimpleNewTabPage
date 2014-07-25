@@ -11,7 +11,7 @@ $(document).ready(function() {
     });
 
     apps_e.on('click', 'div.app', function() {
-        if (!$(this).hasClass('dragging')) {
+        if (!$(this).hasClass('noclick')) {
             chrome.management.launchApp($(this).attr('id'));
         }
         return false;

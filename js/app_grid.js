@@ -70,7 +70,7 @@ var appGrid = new function () {
 
             window_element.mousemove(function(e) {
                 e.preventDefault();
-                app.addClass('dragging');
+                app.addClass('dragging noclick');
 
                 var left = grid_element.initial_position.left - mouse_initial_position.left + e.pageX;
                 var top = grid_element.initial_position.top - mouse_initial_position.top + e.pageY;
@@ -150,20 +150,20 @@ var appGrid = new function () {
 
             window_element.mouseup(function(e) {
                 window_element.unbind('mousemove mouseup');
-
-                setTimeout(function() {
-                    app.removeClass('dragging');
-                }, 10);
+                app.removeClass('dragging');
 
                 // element moved, calculate grid position and snap in
                 var number_of_rows = Math.floor($('div#apps').width() / self.slot.width);
                 var number_of_lines = Math.floor(self.grid.length / number_of_rows);
 
-                if (grid_element.live_position.x < 0) grid_element.live_position.x = 0;
-                else if (grid_element.live_position.x > number_of_rows) grid_element.live_position.x = number_of_rows - 1;
-
                 if (grid_element.live_position.y < 0) grid_element.live_position.y = 0;
                 else if (grid_element.live_position.y > number_of_lines) grid_element.live_position.y = number_of_lines;
+
+                if (grid_element.live_position.x < 0) grid_element.live_position.x = 0;
+                else if (grid_element.live_position.x > number_of_rows) grid_element.live_position.x = number_of_rows - 1;
+                else if (grid_element.live_position.x > (self.grid.length % number_of_rows) - 1 && grid_element.live_position.y == number_of_lines) {
+                    grid_element.live_position.x = (self.grid.length % number_of_rows) - 1;
+                }
 
                 var left = grid_element.live_position.x * self.slot.width;
                 var top = grid_element.live_position.y * self.slot.height;
@@ -174,6 +174,10 @@ var appGrid = new function () {
                 grid_element.initial_position.top = top;
                 grid_element.initial_position.x = grid_element.live_position.x;
                 grid_element.initial_position.y = grid_element.live_position.y;
+
+                setTimeout(function() {
+                    app.removeClass('noclick');
+                }, 10);
 
                 /*
                 if (!moved) {
@@ -243,26 +247,19 @@ var appGrid = new function () {
         grid_element.live_position.left = left;
         grid_element.live_position.top = top;
 
-        /*
-        var objects_to_move_x = Math.floor(drag_size.left / self.slot.width);
-        var objects_to_move_y = Math.floor(drag_size.top / self.slot.height);
-        */
-
         if (drag_size.left > (self.slot.width / 2) || drag_size.left < (-self.slot.width / 2)) {
-            var slots_moved = Math.ceil(drag_size.left / (self.slot.width));
+            var slots_moved = Math.round(drag_size.left / (self.slot.width));
             grid_element.live_position.x = grid_element.initial_position.x - slots_moved;
         } else {
             grid_element.live_position.x = grid_element.initial_position.x;
         }
 
         if (drag_size.top > (self.slot.height / 2) || drag_size.top < (-self.slot.height / 2)) {
-            var vertical_slots_moved = Math.ceil(drag_size.top / (self.slot.height));
+            var vertical_slots_moved = Math.round(drag_size.top / (self.slot.height));
             grid_element.live_position.y = grid_element.initial_position.y - vertical_slots_moved;
         } else {
             grid_element.live_position.y = grid_element.initial_position.y;
         }
-
-        console.log(grid_element.initial_position);
     };
 
     this.helpers = new function () {
