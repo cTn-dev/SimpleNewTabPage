@@ -78,7 +78,10 @@ var appGrid = new function () {
 
                 app.css({'margin-left': left, 'margin-top': top});
 
-                self.processLivePosition(grid_element, drag_size, left, top);
+                var slots_moved = self.processLivePosition(grid_element, drag_size, left, top);
+
+                console.log(slots_moved);
+
 
                 /*
                 var left = element_init_pos.left + e.pageX - mouse_init_pos.left;
@@ -159,9 +162,11 @@ var appGrid = new function () {
                 if (grid_element.live_position.y < 0) grid_element.live_position.y = 0;
                 else if (grid_element.live_position.y > number_of_lines) grid_element.live_position.y = number_of_lines;
 
-                if (grid_element.live_position.x < 0) grid_element.live_position.x = 0;
-                else if (grid_element.live_position.x > number_of_rows) grid_element.live_position.x = number_of_rows - 1;
-                else if (grid_element.live_position.x > (self.grid.length % number_of_rows) - 1 && grid_element.live_position.y == number_of_lines) {
+                if (grid_element.live_position.x < 0) {
+                    grid_element.live_position.x = 0;
+                } else if (grid_element.live_position.x > number_of_rows - 1) {
+                    grid_element.live_position.x = number_of_rows - 1;
+                } else if (grid_element.live_position.x > (self.grid.length % number_of_rows) - 1 && grid_element.live_position.y == number_of_lines) {
                     grid_element.live_position.x = (self.grid.length % number_of_rows) - 1;
                 }
 
@@ -247,19 +252,23 @@ var appGrid = new function () {
         grid_element.live_position.left = left;
         grid_element.live_position.top = top;
 
+        var horizontal_slots_moved = 0;
         if (drag_size.left > (self.slot.width / 2) || drag_size.left < (-self.slot.width / 2)) {
-            var slots_moved = Math.round(drag_size.left / (self.slot.width));
-            grid_element.live_position.x = grid_element.initial_position.x - slots_moved;
+            horizontal_slots_moved = Math.round(drag_size.left / (self.slot.width));
+            grid_element.live_position.x = grid_element.initial_position.x - horizontal_slots_moved;
         } else {
             grid_element.live_position.x = grid_element.initial_position.x;
         }
 
+        var vertical_slots_moved = 0;
         if (drag_size.top > (self.slot.height / 2) || drag_size.top < (-self.slot.height / 2)) {
-            var vertical_slots_moved = Math.round(drag_size.top / (self.slot.height));
+            vertical_slots_moved = Math.round(drag_size.top / (self.slot.height));
             grid_element.live_position.y = grid_element.initial_position.y - vertical_slots_moved;
         } else {
             grid_element.live_position.y = grid_element.initial_position.y;
         }
+
+        return {'x': horizontal_slots_moved, 'y': vertical_slots_moved};
     };
 
     this.helpers = new function () {

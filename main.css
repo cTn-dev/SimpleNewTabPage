@@ -89,7 +89,7 @@ a:hover {
 
         text-align: center;
 
-        -webkit-transition: margin 0.5s;
+        -webkit-transition: margin 0.25s;
         z-index: 1;
     }
     #apps .app .wrapper {
@@ -117,4 +117,7 @@ a:hover {
     #apps .dragging {
         z-index: 100;
         -webkit-transition: none;
+    }
+    #apps .dodging {
+        -webkit-transition: margin 0.20s;
     }
