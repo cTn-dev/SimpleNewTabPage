@@ -160,6 +160,26 @@ var appGrid = new function () {
                     app.removeClass('dragging');
                 }, 10);
 
+                // element moved, calculate grid position and snap in
+                var number_of_rows = Math.floor($('div#apps').width() / self.slot.width);
+                var number_of_lines = Math.floor(self.grid.length / number_of_rows);
+
+                if (grid_element.live_position.x < 0) grid_element.live_position.x = 0;
+                else if (grid_element.live_position.x > number_of_rows) grid_element.live_position.x = number_of_rows - 1;
+
+                if (grid_element.live_position.y < 0) grid_element.live_position.y = 0;
+                else if (grid_element.live_position.y > number_of_lines) grid_element.live_position.y = number_of_lines;
+
+                var left = grid_element.live_position.x * self.slot.width;
+                var top = grid_element.live_position.y * self.slot.height;
+
+                app.css({'margin-left': left, 'margin-top': top});
+
+                grid_element.initial_position.left = left;
+                grid_element.initial_position.top = top;
+                grid_element.initial_position.x = grid_element.live_position.x;
+                grid_element.initial_position.y = grid_element.live_position.y;
+
                 /*
                 if (!moved) {
                     // return element to its default position
@@ -246,6 +266,8 @@ var appGrid = new function () {
         } else {
             grid_element.live_position.y = grid_element.initial_position.y;
         }
+
+        console.log(grid_element.initial_position);
     };
 
     this.helpers = new function () {
