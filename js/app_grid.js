@@ -51,7 +51,9 @@ var appGrid = new function () {
     this.bindDraggable = function (app) {
         app.mousedown(function (e) {
             var window_element = $(window);
+            var container_width = $('div#apps').width();
             var mouse_initial_position = {'left': e.pageX, 'top': e.pageY};
+
             var grid_element;
             for (var i = 0; i < self.grid.length; i++) {
                 if (self.grid[i].element == app) {
@@ -59,14 +61,6 @@ var appGrid = new function () {
                     break;
                 }
             }
-
-            /*
-            var grid_pos = element.data('grid-position');
-            var element_init_pos = {'left': grid_pos.left, 'top': grid_pos.top};
-            var element_offset = element.offset();
-
-            var moved = 0;
-            */
 
             window_element.mousemove(function(e) {
                 e.preventDefault();
@@ -80,75 +74,35 @@ var appGrid = new function () {
 
                 var slots_moved = self.processLivePosition(grid_element, drag_size, left, top);
 
-                console.log(slots_moved);
-
-
-                /*
-                var left = element_init_pos.left + e.pageX - mouse_init_pos.left;
-                var top = element_init_pos.top + e.pageY - mouse_init_pos.top;
-                var mouse_traveled = mouse_init_pos.left - e.pageX;
-                element.css({'margin-left': left, 'margin-top': top});
-
-                // tells how many rows to dodge
-                if (mouse_traveled > (self.slot.width / 2)) {
-                    var move_n = Math.floor(mouse_traveled / self.slot.width);
-
-                    if (move_n > moved) {
-                        for (var i = 0; i < self.grid.length; i++) {
-                            var checking = self.grid[i].data('grid-position');
-                            if (checking.row <= (grid_pos.row - move_n) && checking.row >= (grid_pos.row - move_n) && checking.col == grid_pos.col) {
-                                self.grid[i].addClass('dodging');
-                                self.grid[i].css({'margin-left': checking.left + self.slot.width});
-                                moved++;
+                for (var i = 0; i < self.grid.length; i++) {
+                    if (self.grid[i] != grid_element) { // skip dragged element
+                        if (slots_moved.x >= 0) {
+                            if (self.grid[i].live_position.x < grid_element.initial_position.x
+                                && self.grid[i].live_position.x >= grid_element.initial_position.x - slots_moved.x
+                                && self.grid[i].live_position.y == grid_element.live_position.y) {
+                                // dodge away
+                                self.grid[i].element.css({'margin-left': self.grid[i].initial_position.left + self.slot.width});
+                                self.grid[i].live_position.left = self.grid[i].initial_position.left + self.slot.width;
+                            } else {
+                                // dodge back
+                                self.grid[i].element.css({'margin-left': self.grid[i].initial_position.left});
+                                self.grid[i].live_position.left = self.grid[i].initial_position.left;
                             }
-                        }
-                    }
-
-                    if (moved > move_n) {
-                        for (var i = 0; i < self.grid.length; i++) {
-                            var checking = self.grid[i].data('grid-position');
-                            if (self.grid[i].hasClass('dodging') && checking.row < (grid_pos.row - move_n)) {
-                                self.grid[i].css({'margin-left': checking.left});
-                                self.grid[i].removeClass('dodging');
-                                moved--;
+                        } else if (slots_moved.x <= 0) {
+                            if (self.grid[i].live_position.x > grid_element.initial_position.x
+                                && self.grid[i].live_position.x <= grid_element.initial_position.x + (slots_moved.x * -1)
+                                && self.grid[i].live_position.y == grid_element.live_position.y) {
+                                // dodge away
+                                self.grid[i].element.css({'margin-left': self.grid[i].initial_position.left - self.slot.width});
+                                self.grid[i].live_position.left = self.grid[i].initial_position.left - self.slot.width;
+                            } else {
+                                // dodge back
+                                self.grid[i].element.css({'margin-left': self.grid[i].initial_position.left});
+                                self.grid[i].live_position.left = self.grid[i].initial_position.left;
                             }
-                        }
-                    }
-                } else if (mouse_traveled < (self.slot.width / 2)) {
-                    var move_n = Math.floor(mouse_traveled / self.slot.width) * - 1;
-
-                    if (move_n > moved) {
-                        for (var i = 0; i < self.grid.length; i++) {
-                            var checking = self.grid[i].data('grid-position');
-                            if (checking.row >= (grid_pos.row + move_n) && checking.row <= (grid_pos.row + move_n) && checking.col == grid_pos.col) {
-                                self.grid[i].addClass('dodging');
-                                self.grid[i].css({'margin-left': checking.left - self.slot.width});
-                                moved++;
-                            }
-                        }
-                    }
-
-                    if (moved > move_n) {
-                        for (var i = 0; i < self.grid.length; i++) {
-                            var checking = self.grid[i].data('grid-position');
-                            if (self.grid[i].hasClass('dodging') && checking.row > (grid_pos.row + move_n)) {
-                                self.grid[i].css({'margin-left': checking.left});
-                                self.grid[i].removeClass('dodging');
-                                moved--;
-                            }
-                        }
-                    }
-                } else {
-                    // restore dodged elements to normal
-                    for (var i = 0; i < self.grid.length; i++) {
-                        if (self.grid[i].hasClass('dodging')) {
-                            self.grid[i].css({'margin-left': self.grid[i].data('grid-position').left, 'margin-top': self.grid[i].data('grid-position').top});
-                            self.grid[i].removeClass('dodging');
-                            moved--;
                         }
                     }
                 }
-                */
             });
 
             window_element.mouseup(function(e) {
@@ -183,67 +137,6 @@ var appGrid = new function () {
                 setTimeout(function() {
                     app.removeClass('noclick');
                 }, 10);
-
-                /*
-                if (!moved) {
-                    // return element to its default position
-                    for (var i = 0; i < self.grid.length; i++) {
-                        if (self.grid[i].hasClass('dragging')) {
-                            self.grid[i].css({'margin-left': self.grid[i].data('grid-position').left, 'margin-top': self.grid[i].data('grid-position').top});
-
-                            setTimeout(function() {
-                                element.removeClass('dragging');
-                            }, 10);
-
-                            break;
-                        }
-                    }
-                } else {
-                    // save new position
-                    for (var i = 0; i < self.grid.length; i++) {
-                        if (self.grid[i].hasClass('dragging')) {
-                            var data = self.grid[i].data('grid-position');
-                            var mouse_traveled = mouse_init_pos.left - e.pageX;
-                            var move_n = Math.floor(mouse_traveled / self.slot.width) * -1;
-
-                            data.row = data.row + move_n;
-                            data.left = data.row * self.slot.width;
-
-                            self.grid[i].data('grid-position', data);
-
-                            self.grid[i].css({'margin-left': self.grid[i].data('grid-position').left, 'margin-top': self.grid[i].data('grid-position').top});
-
-                            moved = 0;
-                            break;
-                        }
-                    }
-
-                    // re-calculate rows and cols according to index
-                    self.grid = [];
-                    var row = 0;
-                    var col = 0;
-                    $('div#apps .apps-wrapper .app').each(function() {
-                        var container_width = $('div#apps').width();
-                        var slots_per_line = Math.floor(container_width / self.slot.width);
-                        var element = $(this);
-                        var index = element.index();
-                        var data = element.data('grid-position');
-
-                        data.row = row++;
-                        data.col = col;
-                        data.left = data.row * self.slot.width;
-
-                        element.data('grid-position', data);
-
-                        if (row > slots_per_line - 1) {
-                            row = 0;
-                            col++;
-                        }
-
-                        self.grid.push(element);
-                    });
-                }
-                */
             });
         });
     };
