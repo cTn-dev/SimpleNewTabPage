@@ -6,9 +6,9 @@ var appGrid = new function () {
     this.addApp = function (data) {
         // create element
         var app =
-            $('<div id="' + data.id + '" class="app" title="' + data.name + '"> \
+            $('<div id="' + data.id + '" class="app ' + this.helpers.isAppEnabled(data.enabled) + '" title="' + data.name + '"> \
                 <div class="wrapper">\
-                    <img class="' + this.helpers.isAppEnabled(data.enabled) + '" src="' + this.helpers.getIcon(data.icons) + '" />\
+                    <img src="' + this.helpers.getIcon(data.icons) + '" />\
                     <span>' + this.helpers.shortenName(data) + '</span>\
                 </div>\
             </div>');
@@ -17,7 +17,7 @@ var appGrid = new function () {
         var position = this.calculateInitialPosition(app);
 
         // bind draggable events
-        this.bindDraggable(app);
+        //this.bindDraggable(app);
 
         // save reference in grid array
         this.grid.push({

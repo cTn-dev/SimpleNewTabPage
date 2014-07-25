@@ -65,51 +65,44 @@ $(document).ready(function() {
 
     // take care of management events
     chrome.management.onInstalled.addListener(function(info) {
-        /*
         if (info.isApp) {
+            // check if app was really installed and we are not just receiving restart event
+            for (var i = 0; i < appGrid.grid.length; i++) {
+                if (appGrid.grid[i].data.id == info.id) return;
+            }
+
             appGrid.addApp(info);
         }
-        */
     });
 
     chrome.management.onUninstalled.addListener(function(id) {
-        /*
-        var apps = $('.app', apps_e);
-
-        for (var i = 0; i < apps.length; i++) {
-            if (id == $(apps[i]).data('properties').id) {
-                $(apps[i]).remove();
+        for (var i = 0; i < appGrid.grid.length; i++) {
+            if (appGrid.grid[i].data.id == id) {
+                appGrid.grid[i].element.remove();
+                appGrid.grid.splice(i, 1);
+                break;
             }
         }
-        */
     });
 
     chrome.management.onEnabled.addListener(function(info) {
-        /*
-        var apps = $('.app', apps_e);
-
-        for (var i = 0; i < apps.length; i++) {
-            if (info.id == $(apps[i]).data('properties').id) {
-                $('img', apps[i]).removeClass('disabled');
-                $(apps[i]).data('properties', info);
+        for (var i = 0; i < appGrid.grid.length; i++) {
+            if (appGrid.grid[i].data.id == info.id) {
+                appGrid.grid[i].element.removeClass('disabled');
+                appGrid.grid[i].data = info;
                 break;
             }
         }
-        */
     });
 
     chrome.management.onDisabled.addListener(function(info) {
-        /*
-        var apps = $('.app', apps_e);
-
-        for (var i = 0; i < apps.length; i++) {
-            if (info.id == $(apps[i]).data('properties').id) {
-                $('img', apps[i]).addClass('disabled');
-                $(apps[i]).data('properties', info);
+        for (var i = 0; i < appGrid.grid.length; i++) {
+            if (appGrid.grid[i].data.id == info.id) {
+                appGrid.grid[i].element.addClass('disabled');
+                appGrid.grid[i].data = info;
                 break;
             }
         }
-        */
     });
 
 

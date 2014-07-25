@@ -108,7 +108,7 @@ a:hover {
         width: 128px;
         height: 128px;
     }
-    #apps .app img.disabled {
+    #apps .app.disabled img {
         opacity: 0.75;
         -webkit-filter: grayscale(1.0);
     }
