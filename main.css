@@ -116,4 +116,5 @@ a:hover {
     }
     #apps .dragging {
         z-index: 100;
+        -webkit-transition: none;
     }
