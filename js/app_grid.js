@@ -13,17 +13,24 @@ var appGrid = new function () {
                 </div>\
             </div>');
 
-        // bind in data
-        app.data('properties', data);
-
         // calculate grid position
-        this.calculateInitialPosition(app);
+        var position = this.calculateInitialPosition(app);
 
         // bind draggable events
         this.bindDraggable(app);
 
         // save reference in grid array
-        this.grid.push(app);
+        this.grid.push({
+            'initial_position': position,
+            'live_position': {
+                'left': 0,
+                'top':  0,
+                'x':    0,
+                'y':    0
+            },
+            'data':     data,
+            'element':  app
+        });
 
         // push to DOM
         $('div#apps .apps-wrapper').append(app);
@@ -37,29 +44,48 @@ var appGrid = new function () {
         var position = {
             'left': this.slot.width * (occupied_slots % slots_per_line),
             'top': this.slot.height * Math.floor(occupied_slots / slots_per_line),
-            'row': occupied_slots % slots_per_line,
-            'col': Math.floor(occupied_slots / slots_per_line)
+            'x': occupied_slots % slots_per_line,
+            'y': Math.floor(occupied_slots / slots_per_line)
         };
 
         app.css({'margin-left': position.left, 'margin-top': position.top});
-        app.data('grid-position', position);
+
+        return position;
     };
 
     this.bindDraggable = function (app) {
         app.mousedown(function (e) {
-            var element = $(this);
-            var window_e = $(window);
-            var mouse_init_pos = {'left': e.pageX, 'top': e.pageY};
+            var window_element = $(window);
+            var mouse_initial_position = {'left': e.pageX, 'top': e.pageY};
+            var grid_element;
+            for (var i = 0; i < self.grid.length; i++) {
+                if (self.grid[i].element == app) {
+                    grid_element = self.grid[i];
+                    break;
+                }
+            }
+
+            /*
             var grid_pos = element.data('grid-position');
             var element_init_pos = {'left': grid_pos.left, 'top': grid_pos.top};
             var element_offset = element.offset();
 
             var moved = 0;
+            */
 
-            window_e.mousemove(function(e) {
+            window_element.mousemove(function(e) {
                 e.preventDefault();
-                element.addClass('dragging');
+                app.addClass('dragging');
 
+                var left = grid_element.initial_position.left - mouse_initial_position.left + e.pageX;
+                var top = grid_element.initial_position.top - mouse_initial_position.top + e.pageY;
+                var drag_size = {'left': mouse_initial_position.left - e.pageX, 'top': mouse_initial_position.top - e.pageY};
+
+                app.css({'margin-left': left, 'margin-top': top});
+
+                self.processLivePosition(grid_element, drag_size, left, top);
+
+                /*
                 var left = element_init_pos.left + e.pageX - mouse_init_pos.left;
                 var top = element_init_pos.top + e.pageY - mouse_init_pos.top;
                 var mouse_traveled = mouse_init_pos.left - e.pageX;
@@ -124,11 +150,17 @@ var appGrid = new function () {
                         }
                     }
                 }
+                */
             });
 
-            window_e.mouseup(function(e) {
-                window_e.unbind('mousemove mouseup');
+            window_element.mouseup(function(e) {
+                window_element.unbind('mousemove mouseup');
 
+                setTimeout(function() {
+                    app.removeClass('dragging');
+                }, 10);
+
+                /*
                 if (!moved) {
                     // return element to its default position
                     for (var i = 0; i < self.grid.length; i++) {
@@ -187,8 +219,33 @@ var appGrid = new function () {
                         self.grid.push(element);
                     });
                 }
+                */
             });
         });
+    };
+
+    this.processLivePosition = function (grid_element, drag_size, left, top) {
+        grid_element.live_position.left = left;
+        grid_element.live_position.top = top;
+
+        /*
+        var objects_to_move_x = Math.floor(drag_size.left / self.slot.width);
+        var objects_to_move_y = Math.floor(drag_size.top / self.slot.height);
+        */
+
+        if (drag_size.left > (self.slot.width / 2) || drag_size.left < (-self.slot.width / 2)) {
+            var slots_moved = Math.ceil(drag_size.left / (self.slot.width));
+            grid_element.live_position.x = grid_element.initial_position.x - slots_moved;
+        } else {
+            grid_element.live_position.x = grid_element.initial_position.x;
+        }
+
+        if (drag_size.top > (self.slot.height / 2) || drag_size.top < (-self.slot.height / 2)) {
+            var vertical_slots_moved = Math.ceil(drag_size.top / (self.slot.height));
+            grid_element.live_position.y = grid_element.initial_position.y - vertical_slots_moved;
+        } else {
+            grid_element.live_position.y = grid_element.initial_position.y;
+        }
     };
 
     this.helpers = new function () {
