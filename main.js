@@ -109,63 +109,71 @@ $(document).ready(function() {
     });
 
     function process_topSites(result) {
-        for (var i = 0; i < 15; i++) {
-            var short_name = result[i].title;
-            if (result[i].title.length > 20) {
-                short_name = result[i].title.slice(0, 20);
-                short_name += '...';
+        if (CONFIGURATION.data.options.topSitesVisible) {
+            for (var i = 0; i < 15; i++) {
+                var short_name = result[i].title;
+                if (result[i].title.length > 20) {
+                    short_name = result[i].title.slice(0, 20);
+                    short_name += '...';
+                }
+
+                var site =
+                    $('<div class="site">\
+                        <img src="chrome://favicon/' + result[i].url + '" alt=""/><a href="' + result[i].url + '" title="' + result[i].title + '">' + short_name + '</a>\
+                    </div>');
+
+                $('.clear-both', top_pages_e).before(site);
             }
 
-            var site =
-                $('<div class="site">\
-                    <img src="chrome://favicon/' + result[i].url + '" alt=""/><a href="' + result[i].url + '" title="' + result[i].title + '">' + short_name + '</a>\
-                </div>');
-
-            $('.clear-both', top_pages_e).before(site);
+            center_top_pages();
+            top_pages_c.fadeIn(100);
+        } else {
+            top_pages_c.hide();
         }
-
-        center_top_pages();
-        top_pages_e.fadeIn(100);
     };
 
     function process_appsExtensions(result) {
-        // filter out extensions
-        for (var i = result.length - 1; i >= 0; i--) {
-            if (result[i].isApp == false) {
-                result.splice(i, 1);
-            }
-        }
-
-        if (CONFIGURATION.data.appsOrder) {
-            for (var i = 0; i < CONFIGURATION.data.appsOrder.length; i++) {
-                for (var j = 0; j < result.length; j++) {
-                    if (result[j].id == CONFIGURATION.data.appsOrder[i]) {
-                        appGrid.addApp(result[j]);
-                        result.splice(j, 1);
-                        break;
-                    }
+        if (CONFIGURATION.data.options.appsExtensionsVisible) {
+            // filter out extensions
+            for (var i = result.length - 1; i >= 0; i--) {
+                if (result[i].isApp == false) {
+                    result.splice(i, 1);
                 }
             }
 
-            // handle any outstanding shortcuts (if there are any)
-            for (var i = 0; i < result.length; i++) {
-                appGrid.addApp(result[i]);
+            if (CONFIGURATION.data.appsOrder) {
+                for (var i = 0; i < CONFIGURATION.data.appsOrder.length; i++) {
+                    for (var j = 0; j < result.length; j++) {
+                        if (result[j].id == CONFIGURATION.data.appsOrder[i]) {
+                            appGrid.addApp(result[j]);
+                            result.splice(j, 1);
+                            break;
+                        }
+                    }
+                }
+
+                // handle any outstanding shortcuts (if there are any)
+                for (var i = 0; i < result.length; i++) {
+                    appGrid.addApp(result[i]);
+                }
+            } else {
+                // sort alphabetically, since user didn't save a custom grid
+                result.sort(function (a, b) {
+                    if (a.name < b.name) return -1;
+                    if (a.name > b.name) return 1;
+                });
+
+                // generate app shortcuts
+                for (var i = 0; i < result.length; i++) {
+                    appGrid.addApp(result[i]);
+                }
             }
+
+            center_apps();
+            apps_c.fadeIn(100);
         } else {
-            // sort alphabetically, since user didn't save a custom grid
-            result.sort(function (a, b) {
-                if (a.name < b.name) return -1;
-                if (a.name > b.name) return 1;
-            });
-
-            // generate app shortcuts
-            for (var i = 0; i < result.length; i++) {
-                appGrid.addApp(result[i]);
-            }
+            apps_c.hide();
         }
-
-        center_apps();
-        apps_e.fadeIn(100);
     };
 
     function process_sessions() {
@@ -240,6 +248,20 @@ $(document).ready(function() {
             el.after('<div id="options-window"></div>');
 
             $('div#options-window').load('./options.html', function() {
+                // fill in data
+                $('input.topSitesVisible').prop('checked', CONFIGURATION.data.options.topSitesVisible);
+                $('input.appsExtensionsVisible').prop('checked', CONFIGURATION.data.options.appsExtensionsVisible);
+                $('input.sessionsVisible').prop('checked', CONFIGURATION.data.options.sessionsVisible);
+
+                // bind events
+                $('div#options-window input').change(function() {
+                    CONFIGURATION.status.optionsChanged = true;
+
+                    var property = $(this).attr('class');
+                    var val = $(this).is(':checked');
+
+                    CONFIGURATION.data.options[property] = val;
+                });
 
                 $(this).slideDown();
 

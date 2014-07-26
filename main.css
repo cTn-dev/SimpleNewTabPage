@@ -51,7 +51,7 @@ a:hover {
     right: 0;
     top: 15px;
 
-    width: 80%;
+    width: 60%;
     min-width: 800px;
 
     padding: 10px;
@@ -60,14 +60,23 @@ a:hover {
     border-radius: 6px;
     background-color: rgba(255, 255, 255, 0.90);
 }
+    #options-window .title {
+        text-align: center;
+        font-weight: bold;
+
+        padding-bottom: 10px;
+    }
+    #options-window input[type="checkbox"] {
+        vertical-align: middle;
+    }
 #top-pages {
+    display: none;
     width: 50%;
 
     margin: auto;
     margin-bottom: 50px;
 }
     #top-pages .top-pages-wrapper {
-        display: none;
     }
     #top-pages .title {
         padding: 0 0 5px 0;
@@ -95,12 +104,12 @@ a:hover {
         color: black;
     }
 #apps {
+    display: none;
     width: 50%;
 
     margin: auto;
 }
     #apps .apps-wrapper {
-        display: none;
     }
     #apps .title {
         padding: 0 0 5px 0;
