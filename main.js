@@ -81,6 +81,7 @@ $(document).ready(function() {
                 }
             }
 
+            center_apps();
             apps_e.fadeIn(60);
         });
     });
@@ -138,13 +139,11 @@ $(document).ready(function() {
     }
 
     function center_apps() {
-        /*
         var container_w = apps_c.width();
         var app_w = $('div.app', apps_c).outerWidth();
         var row_elements_n = Math.floor(container_w / app_w);
         var blank_space = container_w - (app_w * row_elements_n);
 
         apps_e.css({'margin-left': (blank_space / 2)});
-        */
     }
 });
