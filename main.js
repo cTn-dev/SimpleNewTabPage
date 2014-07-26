@@ -1,4 +1,8 @@
 $(document).ready(function() {
+    // add the dataTransfer property for use with the native `drop` event
+    // to capture information about files dropped into the browser window
+    jQuery.event.props.push("dataTransfer");
+
     var top_pages_c = $('div#top-pages');
     var top_pages_e = $('div#top-pages .top-pages-wrapper');
     var apps_c = $('div#apps');
@@ -48,19 +52,37 @@ $(document).ready(function() {
             }
         }
 
-        // sort alphabetically (if custom order was saved, use that instead)
-        result.sort(function (a, b) {
-            if (a.name < b.name) return -1;
-            if (a.name > b.name) return 1;
+        chrome.storage.sync.get('gridOrder', function (data) {
+            if (data.gridOrder) {
+                for (var i = 0; i < data.gridOrder.length; i++) {
+                    for (var j = 0; j < result.length; j++) {
+                        if (result[j].id == data.gridOrder[i]) {
+                            appGrid.addApp(result[j]);
+                            result.splice(j, 1);
+                            break;
+                        }
+                    }
+                }
+
+                // handle any outstanding shortcuts (if there are any)
+                for (var i = 0; i < result.length; i++) {
+                    appGrid.addApp(result[i]);
+                }
+            } else {
+                // sort alphabetically, since user didn't save a custom grid
+                result.sort(function (a, b) {
+                    if (a.name < b.name) return -1;
+                    if (a.name > b.name) return 1;
+                });
+
+                // generate app shortcuts
+                for (var i = 0; i < result.length; i++) {
+                    appGrid.addApp(result[i]);
+                }
+            }
+
+            apps_e.fadeIn(60);
         });
-
-        // generate app shortcuts
-        for (var i = 0; i < result.length; i++) {
-            appGrid.addApp(result[i]);
-        }
-
-        center_apps();
-        apps_e.fadeIn(60);
     });
 
     // take care of management events
