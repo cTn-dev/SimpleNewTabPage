@@ -63,8 +63,6 @@ a:hover {
     #options-window .title {
         text-align: center;
         font-weight: bold;
-
-        padding-bottom: 10px;
     }
     #options-window input[type="checkbox"] {
         vertical-align: middle;
