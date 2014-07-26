@@ -15,9 +15,7 @@ $(document).ready(function() {
     });
 
     apps_e.on('click', 'div.app', function() {
-        if (!$(this).hasClass('noclick')) {
-            chrome.management.launchApp($(this).attr('id'));
-        }
+        chrome.management.launchApp($(this).attr('id'));
         return false;
     });
 
@@ -39,7 +37,7 @@ $(document).ready(function() {
         }
 
         center_top_pages();
-        top_pages_e.fadeIn(60);
+        top_pages_e.fadeIn(50);
     });
 
     // fetch apps and extensions
@@ -82,7 +80,7 @@ $(document).ready(function() {
             }
 
             center_apps();
-            apps_e.fadeIn(60);
+            apps_e.fadeIn(50);
         });
     });
 
