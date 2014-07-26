@@ -50,7 +50,6 @@ var appGrid = new function () {
             if (content.next()[0] != landing_on[0] && landing_on.position().top <= content.position().top) {
                 content.insertBefore(landing_on);
             } else {
-                console.log('hit');
                 content.insertAfter(landing_on);
             }
 
