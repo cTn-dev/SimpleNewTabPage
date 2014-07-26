@@ -16,6 +16,11 @@ $(document).ready(function() {
 
     apps_e.on('click', 'div.app', function() {
         chrome.management.launchApp($(this).attr('id'));
+
+        chrome.tabs.getCurrent(function(tab) {
+            chrome.tabs.remove(tab.id);
+        });
+
         return false;
     });
 
