@@ -5,6 +5,9 @@ var CONFIGURATION = {
         'appsExtensions':   null,
         'appsOrder':        null,
         'sessions':         null
+    },
+    'status': {
+        'optionsChanged': false
     }
 };
 
@@ -42,6 +45,7 @@ $(document).ready(function() {
         } else {
             // not saved yet, apply defaults
             CONFIGURATION.data.options = {
+                'version':                  1,
                 'topSitesVisible':          true,
                 'topSitesItemsMax':         15,
                 'appsExtensionsVisible':    true,
@@ -121,7 +125,7 @@ $(document).ready(function() {
         }
 
         center_top_pages();
-        top_pages_e.fadeIn(50);
+        top_pages_e.fadeIn(100);
     };
 
     function process_appsExtensions(result) {
@@ -161,7 +165,7 @@ $(document).ready(function() {
         }
 
         center_apps();
-        apps_e.fadeIn(50);
+        apps_e.fadeIn(100);
     };
 
     function process_sessions() {
@@ -246,6 +250,14 @@ $(document).ready(function() {
                         $('div#options-window').slideUp(function() {
                             el.removeClass('active');
                             $(this).empty().remove();
+
+                            if (CONFIGURATION.status.optionsChanged) {
+                                chrome.storage.sync.set({'options': CONFIGURATION.data.options}, function() {
+                                    chrome.tabs.getCurrent(function(tab) {
+                                        chrome.tabs.reload(tab.id);
+                                    });
+                                });
+                            }
                         });
                     }
                 }
