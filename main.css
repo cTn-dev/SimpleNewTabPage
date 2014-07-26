@@ -103,11 +103,14 @@ a:hover {
     }
 #apps {
     display: none;
-    width: 50%;
+    width: 55%;
 
     margin: auto;
 }
     #apps .apps-wrapper {
+        min-height: 330px;
+        max-height: 500px;
+        overflow-y: auto;
     }
     #apps .title {
         padding: 0 0 5px 0;
