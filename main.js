@@ -149,4 +149,31 @@ $(document).ready(function() {
 
         apps_e.css({'margin-left': (blank_space / 2)});
     }
+
+    $('a#options').click(function() {
+        var el = $(this);
+
+        if (!el.hasClass('active')) {
+            el.addClass('active');
+            el.after('<div id="options-window"></div>');
+
+            $('div#options-window').load('./options.html', function() {
+
+                $(this).slideDown();
+
+                function close_and_cleanup(ev) {
+                    if (ev.type == 'click' && !$.contains($('div#options-window')[0], ev.target) && !$(ev.target).is('div#options-window') || ev.type == 'keyup' && ev.keyCode == 27) {
+                        $(document).unbind('click keyup', close_and_cleanup);
+
+                        $('div#options-window').slideUp(function() {
+                            el.removeClass('active');
+                            $(this).empty().remove();
+                        });
+                    }
+                }
+
+                $(document).bind('click keyup', close_and_cleanup);
+            });
+        }
+    });
 });
