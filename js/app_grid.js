@@ -45,11 +45,9 @@ var appGrid = new function () {
             var landing_on = $(ev.currentTarget);
             var content = $('#' + ev.dataTransfer.getData('id'));
 
-            // could use a little fix for dropping on a different line
-            // we might be able to use .position or .offset here, to determinate the line
-            if (content.next()[0] != landing_on[0] && landing_on.position().top <= content.position().top) {
+            if (content.index() > landing_on.index()) {
                 content.insertBefore(landing_on);
-            } else {
+            } else if (content.index() < landing_on.index()) {
                 content.insertAfter(landing_on);
             }
 
