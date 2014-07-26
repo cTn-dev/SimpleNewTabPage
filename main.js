@@ -1,3 +1,13 @@
+var CONFIGURATION = {
+    'data': {
+        'options':          null,
+        'topSites':         null,
+        'appsExtensions':   null,
+        'appsOrder':        null,
+        'sessions':         null
+    }
+};
+
 $(document).ready(function() {
     // add the dataTransfer property for use with the native `drop` event
     // to capture information about files dropped into the browser window
@@ -24,8 +34,77 @@ $(document).ready(function() {
         return false;
     });
 
+    // get settings
+    var options_ready = [];
+    chrome.storage.sync.get('options', function(data) {
+        if (data.options) {
+            CONFIGURATION.data.options = data.options;
+        } else {
+            // not saved yet, apply defaults
+            CONFIGURATION.data.options = {
+                'topSitesVisible':          true,
+                'topSitesItemsMax':         15,
+                'appsExtensionsVisible':    true,
+                'sessionsVisible':          true,
+                'sessionsItemsMax':         5
+            };
+        }
+
+        // callbacks
+        for (var i = 0; i < options_ready.length; i++) {
+            options_ready[i]();
+        }
+        options_ready = [];
+    });
+
     // fetch most used sites
     chrome.topSites.get(function(result) {
+        CONFIGURATION.data.topSites = result;
+
+        if (CONFIGURATION.data.options) {
+            process_topSites(result);
+        } else {
+            options_ready.push(function() {
+                process_topSites(result);
+            });
+        }
+    });
+
+    // fetch apps and extensions
+    chrome.management.getAll(function(result) {
+        CONFIGURATION.data.appsExtensions = result;
+
+        if (CONFIGURATION.data.options) {
+            if (CONFIGURATION.data.appsOrder) {
+                process_appsExtensions(result);
+            } else {
+                appsOrder_ready.push(function() {
+                    process_appsExtensions(result);
+                });
+            }
+        } else {
+            options_ready.push(function() {
+                process_appsExtensions(result);
+            });
+        }
+    });
+
+    var appsOrder_ready = [];
+    chrome.storage.sync.get('appsOrder', function (data) {
+        if (data.appsOrder) {
+            CONFIGURATION.data.appsOrder = data.appsOrder;
+        } else {
+            CONFIGURATION.data.appsOrder = false;
+        }
+
+        // callbacks
+        for (var i = 0; i < appsOrder_ready.length; i++) {
+            appsOrder_ready[i]();
+        }
+        appsOrder_ready = [];
+    });
+
+    function process_topSites(result) {
         for (var i = 0; i < 15; i++) {
             var short_name = result[i].title;
             if (result[i].title.length > 20) {
@@ -43,11 +122,9 @@ $(document).ready(function() {
 
         center_top_pages();
         top_pages_e.fadeIn(50);
-    });
+    };
 
-    // fetch apps and extensions
-    chrome.management.getAll(function(result) {
-
+    function process_appsExtensions(result) {
         // filter out extensions
         for (var i = result.length - 1; i >= 0; i--) {
             if (result[i].isApp == false) {
@@ -55,39 +132,40 @@ $(document).ready(function() {
             }
         }
 
-        chrome.storage.sync.get('gridOrder', function (data) {
-            if (data.gridOrder) {
-                for (var i = 0; i < data.gridOrder.length; i++) {
-                    for (var j = 0; j < result.length; j++) {
-                        if (result[j].id == data.gridOrder[i]) {
-                            appGrid.addApp(result[j]);
-                            result.splice(j, 1);
-                            break;
-                        }
+        if (CONFIGURATION.data.appsOrder) {
+            for (var i = 0; i < CONFIGURATION.data.appsOrder.length; i++) {
+                for (var j = 0; j < result.length; j++) {
+                    if (result[j].id == CONFIGURATION.data.appsOrder[i]) {
+                        appGrid.addApp(result[j]);
+                        result.splice(j, 1);
+                        break;
                     }
-                }
-
-                // handle any outstanding shortcuts (if there are any)
-                for (var i = 0; i < result.length; i++) {
-                    appGrid.addApp(result[i]);
-                }
-            } else {
-                // sort alphabetically, since user didn't save a custom grid
-                result.sort(function (a, b) {
-                    if (a.name < b.name) return -1;
-                    if (a.name > b.name) return 1;
-                });
-
-                // generate app shortcuts
-                for (var i = 0; i < result.length; i++) {
-                    appGrid.addApp(result[i]);
                 }
             }
 
-            center_apps();
-            apps_e.fadeIn(50);
-        });
-    });
+            // handle any outstanding shortcuts (if there are any)
+            for (var i = 0; i < result.length; i++) {
+                appGrid.addApp(result[i]);
+            }
+        } else {
+            // sort alphabetically, since user didn't save a custom grid
+            result.sort(function (a, b) {
+                if (a.name < b.name) return -1;
+                if (a.name > b.name) return 1;
+            });
+
+            // generate app shortcuts
+            for (var i = 0; i < result.length; i++) {
+                appGrid.addApp(result[i]);
+            }
+        }
+
+        center_apps();
+        apps_e.fadeIn(50);
+    };
+
+    function process_sessions() {
+    };
 
     // take care of management events
     chrome.management.onInstalled.addListener(function(info) {
