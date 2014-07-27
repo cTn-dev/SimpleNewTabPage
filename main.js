@@ -204,7 +204,7 @@ $(document).ready(function() {
 
             var display_n = result.length;
             var current_time = new Date().getTime();
-            var time_limit = current_time - (10 * 60000); // - 10 minutes in milliseconds
+            var time_limit = (current_time - (10 * 60000)) / 1000; // - 10 minutes in milliseconds
             var sites_displayed = 0;
 
             if (display_n > CONFIGURATION.data.options.sessionsItemsMax) {
@@ -212,21 +212,26 @@ $(document).ready(function() {
             }
 
             for (var i = 0; i < display_n; i++) {
-                var short_name = result[i].tab.title;
-                if (result[i].tab.title.length > 20) {
-                    short_name = result[i].tab.title.slice(0, 20);
-                    short_name += '...';
-                }
+                if (result[i].tab) {
+                    var short_name = result[i].tab.title;
+                    if (result[i].tab.title.length > 20) {
+                        short_name = result[i].tab.title.slice(0, 20);
+                        short_name += '...';
+                    }
 
-                // result.lastModified cannot be used because the returned value is wrong (investigate?)
-                if (result[i].tab.url.indexOf('http://') > -1) { // ignore chrome:// pages
-                    var closed_site =
-                        $('<div class="closed-site">\
-                            <img src="chrome://favicon/' + result[i].tab.url + '" alt="" /><a href="' + result[i].tab.url + '" title="' + result[i].tab.title + '">' + short_name + '</a>\
-                        </div>');
+                    // result[i].lastModified cannot be used because the returned value is wrong (investigate?)
+                    // it seems that the returned value is in seconds, not milliseconds
+                    if (result[i].lastModified > time_limit && result[i].tab.url.indexOf('http://') > -1) { // ignore chrome:// pages
+                        var closed_site =
+                            $('<div class="closed-site">\
+                                <img src="chrome://favicon/' + result[i].tab.url + '" alt="" /><a href="' + result[i].tab.url + '" title="' + result[i].tab.title + '">' + short_name + '</a>\
+                            </div>');
 
-                    $('.clear-both', recently_closed_e).before(closed_site);
-                    sites_displayed++;
+                        $('.clear-both', recently_closed_e).before(closed_site);
+                        sites_displayed++;
+                    }
+                } else if (result[i].window) {
+                    console.log('Missing window property implementation !!!');
                 }
             }
 
