@@ -108,9 +108,20 @@ $(document).ready(function() {
         appsOrder_ready = [];
     });
 
+    // fetch recently closed tabs
+    if (window.navigator.appVersion.replace(/.*Chrome\/([0-9.]*).*/,"$1").split('.')[0] > 36) { // sessions api is active only from 37+
+
+    }
+
     function process_topSites(result) {
         if (CONFIGURATION.data.options.topSitesVisible) {
-            for (var i = 0; i < 15; i++) {
+            var display_n = result.length;
+
+            if (display_n > CONFIGURATION.data.options.topSitesItemsMax) {
+                display_n = CONFIGURATION.data.options.topSitesItemsMax;
+            }
+
+            for (var i = 0; i < display_n; i++) {
                 var short_name = result[i].title;
                 if (result[i].title.length > 20) {
                     short_name = result[i].title.slice(0, 20);
