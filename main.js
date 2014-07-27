@@ -20,11 +20,14 @@ $(document).ready(function() {
     var top_pages_e = $('div#top-pages .top-pages-wrapper');
     var apps_c = $('div#apps');
     var apps_e = $('div#apps .apps-wrapper');
+    var recently_closed_c = $('div#recently-closed-pages');
+    var recently_closed_e = $('div#recently-closed-pages .recently-closed-pages-wrapper');
 
     // bind live events
     $(window).resize(function() {
         center_top_pages();
         center_apps();
+        center_recently_closed();
     });
 
     apps_e.on('click', 'div.app', function() {
@@ -110,7 +113,17 @@ $(document).ready(function() {
 
     // fetch recently closed tabs
     if (window.navigator.appVersion.replace(/.*Chrome\/([0-9.]*).*/,"$1").split('.')[0] > 36) { // sessions api is active only from 37+
+        chrome.sessions.getRecentlyClosed(function(result) {
+            CONFIGURATION.data.sessions = result;
 
+            if (CONFIGURATION.data.options) {
+                process_sessions(result);
+            } else {
+                options_ready.push(function() {
+                    process_sessions(result);
+                });
+            }
+        });
     }
 
     function process_topSites(result) {
@@ -138,8 +151,6 @@ $(document).ready(function() {
 
             center_top_pages();
             top_pages_c.fadeIn(100);
-        } else {
-            top_pages_c.hide();
         }
     };
 
@@ -182,15 +193,51 @@ $(document).ready(function() {
 
             center_apps();
             apps_c.fadeIn(100);
-        } else {
-            apps_c.hide();
         }
     };
 
-    function process_sessions() {
+    function process_sessions(result) {
+        if (CONFIGURATION.data.options.sessionsVisible) {
+            // dump previous elements
+            recently_closed_e.empty();
+            recently_closed_e.append('<div class="clear-both"></div>');
+
+            var display_n = result.length;
+            var current_time = new Date().getTime();
+            var time_limit = current_time - (10 * 60000); // - 10 minutes in milliseconds
+            var sites_displayed = 0;
+
+            if (display_n > CONFIGURATION.data.options.sessionsItemsMax) {
+                display_n = CONFIGURATION.data.options.sessionsItemsMax;
+            }
+
+            for (var i = 0; i < display_n; i++) {
+                var short_name = result[i].tab.title;
+                if (result[i].tab.title.length > 20) {
+                    short_name = result[i].tab.title.slice(0, 20);
+                    short_name += '...';
+                }
+
+                // result.lastModified cannot be used because the returned value is wrong (investigate?)
+                if (result[i].tab.url.indexOf('http://') > -1) { // ignore chrome:// pages
+                    var closed_site =
+                        $('<div class="closed-site">\
+                            <img src="chrome://favicon/' + result[i].tab.url + '" alt="" /><a href="' + result[i].tab.url + '" title="' + result[i].tab.title + '">' + short_name + '</a>\
+                        </div>');
+
+                    $('.clear-both', recently_closed_e).before(closed_site);
+                    sites_displayed++;
+                }
+            }
+
+            if (sites_displayed) {
+                center_recently_closed();
+                recently_closed_c.fadeIn(100);
+            }
+        }
     };
 
-    // take care of management events
+    // take care of events
     chrome.management.onInstalled.addListener(function(info) {
         if (info.isApp) {
             // check if app was really installed and we are not just receiving restart event
@@ -232,6 +279,19 @@ $(document).ready(function() {
         }
     });
 
+    if (window.navigator.appVersion.replace(/.*Chrome\/([0-9.]*).*/,"$1").split('.')[0] > 36) {
+        chrome.sessions.onChanged.addListener(function() {
+            // this listener doesn't provide any data which is stupid but it indicates that
+            // the recently closed UI/array needs to be updated/repopulated
+            chrome.sessions.getRecentlyClosed(function(result) {
+                CONFIGURATION.data.sessions = result;
+
+                process_sessions(result);
+            });
+
+        });
+    }
+
 
     function center_top_pages() {
         var container_w = top_pages_c.width();
@@ -249,6 +309,15 @@ $(document).ready(function() {
         var blank_space = container_w - (app_w * row_elements_n);
 
         apps_e.css({'margin-left': (blank_space / 2)});
+    }
+
+    function center_recently_closed() {
+        var container_w = recently_closed_c.width();
+        var site_w = $('div.closed-site', recently_closed_c).outerWidth();
+        var row_elements_n = Math.floor(container_w / site_w);
+        var blank_space = container_w - (site_w * row_elements_n);
+
+        recently_closed_e.css({'margin-left': (blank_space / 2)});
     }
 
     $('a#options').click(function() {

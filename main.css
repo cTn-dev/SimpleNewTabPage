@@ -106,6 +106,7 @@ a:hover {
     width: 55%;
 
     margin: auto;
+    margin-bottom: 50px;
 }
     #apps .apps-wrapper {
         min-height: 330px;
@@ -152,4 +153,34 @@ a:hover {
     #apps .app.disabled img {
         opacity: 0.75;
         -webkit-filter: grayscale(1.0);
+    }
+#recently-closed-pages {
+    display: none;
+    width: 50%;
+    margin: auto;
+}
+    #recently-closed-pages .title {
+        padding: 0 0 5px 0;
+
+        font-weight: bold;
+        text-align: center;
+    }
+    #recently-closed-pages .closed-site {
+        display: block;
+        float: left;
+
+        width: 180px;
+        height: 20px;
+
+        margin: 0 0 5px 0;
+    }
+    #recently-closed-pages .closed-site img {
+        float: left;
+        margin: 3px 5px 0 0;
+    }
+    #recently-closed-pages a {
+        color: #585858;
+    }
+    #recently-closed-pages a:hover {
+        color: black;
     }
