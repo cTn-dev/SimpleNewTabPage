@@ -33,8 +33,13 @@ $(document).ready(function() {
     apps_e.on('click', 'div.app', function() {
         chrome.management.launchApp($(this).attr('id'));
 
-        chrome.tabs.getCurrent(function(tab) {
-            chrome.tabs.remove(tab.id);
+        chrome.tabs.query({}, function(result) {
+            // only auto-close when there is more then 1 tab in the browser window
+            if (result.length > 1) {
+                chrome.tabs.getCurrent(function(tab) {
+                    chrome.tabs.remove(tab.id);
+                });
+            }
         });
 
         return false;
