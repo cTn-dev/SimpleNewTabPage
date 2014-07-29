@@ -114,8 +114,7 @@ a:hover {
         text-align: center;
     }
     #top-pages .site {
-        display: block;
-        float: left;
+        display: inline-block;
 
         width: 180px;
         height: 20px;
@@ -151,7 +150,7 @@ a:hover {
         text-align: center;
     }
     #apps .app {
-        float: left;
+        display: inline-block;
 
         width: 155px;
         height: 155px;
@@ -197,8 +196,7 @@ a:hover {
         text-align: center;
     }
     #recently-closed-pages .closed-site {
-        display: block;
-        float: left;
+        display: inline-block;
 
         width: 180px;
         height: 20px;

@@ -22,7 +22,7 @@ var appGrid = new function () {
         });
 
         // push to DOM
-        $('div#apps .apps-wrapper .clear-both').before(app);
+        $('div#apps .apps-wrapper').append(app);
     };
 
     this.bindDraggable = function (app) {

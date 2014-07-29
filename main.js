@@ -153,7 +153,7 @@ $(document).ready(function() {
                         <img src="chrome://favicon/' + result[i].url + '" alt=""/><a href="' + result[i].url + '" title="' + result[i].title + '">' + short_name + '</a>\
                     </div>');
 
-                $('.clear-both', top_pages_e).before(site);
+                top_pages_e.append(site);
             }
 
             center_top_pages();
@@ -207,7 +207,6 @@ $(document).ready(function() {
         if (CONFIGURATION.data.options.sessionsVisible) {
             // dump previous elements
             recently_closed_e.empty();
-            recently_closed_e.append('<div class="clear-both"></div>');
 
             var display_n = result.length;
             var current_time = new Date().getTime();
@@ -233,7 +232,7 @@ $(document).ready(function() {
                             <img src="chrome://favicon/' + data.url + '" alt="" /><a href="' + data.url + '" title="' + data.title + '">' + short_name + '</a>\
                         </div>');
 
-                    $('.clear-both', recently_closed_e).before(closed_site);
+                    recently_closed_e.append(closed_site);
                     sites_displayed++;
                 }
             }
