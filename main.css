@@ -160,18 +160,20 @@ a:hover {
         text-align: center;
     }
     #apps .app .wrapper {
+        position: relative;
+
         width: 134px;
         height: 150px;
 
         margin: auto;
-        margin-top: 0;
-        -webkit-transition: margin 0.25s, height 0.25s;
+        top: 0;
+        -webkit-transition: all 0.25s;
     }
     #apps .app .wrapper:hover {
         cursor: pointer;
 
         height: 155px;
-        margin-top: -5px;
+        top: -5px;
     }
     #apps .app img {
         display: block;
