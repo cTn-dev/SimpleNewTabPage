@@ -4,7 +4,8 @@ var CONFIGURATION = {
         'topSites':         null,
         'appsExtensions':   null,
         'appsOrder':        null,
-        'sessions':         null
+        'sessions':         null,
+        'bookmarks':        null,
     },
     'status': {
         'optionsChanged': false
@@ -46,7 +47,6 @@ $(document).ready(function() {
     });
 
     // get settings
-    var options_ready = [];
     chrome.storage.sync.get('options', function(data) {
         if (data.options) {
             CONFIGURATION.data.options = data.options;
@@ -58,78 +58,80 @@ $(document).ready(function() {
                 'topSitesItemsMax':         15,
                 'appsExtensionsVisible':    true,
                 'sessionsVisible':          true,
-                'sessionsItemsMax':         5
+                'sessionsItemsMax':         5,
+                'bookmarksVisible':         true,
             };
         }
 
-        // callbacks
-        for (var i = 0; i < options_ready.length; i++) {
-            options_ready[i]();
+        if (CONFIGURATION.data.options.topSitesVisible) {
+            retrieve_topSites();
         }
-        options_ready = [];
-    });
 
-    // fetch most used sites
-    chrome.topSites.get(function(result) {
-        CONFIGURATION.data.topSites = result;
-
-        if (CONFIGURATION.data.options) {
-            process_topSites(result);
-        } else {
-            options_ready.push(function() {
-                process_topSites(result);
-            });
+        if (CONFIGURATION.data.options.appsExtensionsVisible) {
+            retrieve_apps();
+            bind_apps_events();
         }
-    });
 
-    // fetch apps and extensions
-    chrome.management.getAll(function(result) {
-        CONFIGURATION.data.appsExtensions = result;
-
-        if (CONFIGURATION.data.options) {
-            if (CONFIGURATION.data.appsOrder) {
-                process_appsExtensions(result);
-            } else {
-                appsOrder_ready.push(function() {
-                    process_appsExtensions(result);
-                });
+        if (CONFIGURATION.data.options.sessionsVisible) {
+            if (window.navigator.appVersion.replace(/.*Chrome\/([0-9.]*).*/,"$1").split('.')[0] > 36) { // sessions api is active only from 37+
+                retrieve_recentlyClosed();
+                bind_sessions_events();
             }
-        } else {
-            options_ready.push(function() {
+        }
+
+        if (CONFIGURATION.data.options.bookmarksVisible) {
+            retrieve_bookmarks();
+            bind_bookmarks_events();
+        }
+    });
+
+    function retrieve_topSites(callback) {
+        chrome.topSites.get(function(result) {
+            CONFIGURATION.data.topSites = result;
+
+            if (callback) callback(result);
+            process_topSites(result);
+        });
+    };
+
+    function retrieve_apps(callback) {
+        // fetch order
+        chrome.storage.sync.get('appsOrder', function (data) {
+            if (data.appsOrder) {
+                CONFIGURATION.data.appsOrder = data.appsOrder;
+            } else {
+                CONFIGURATION.data.appsOrder = false;
+            }
+
+            chrome.management.getAll(function(result) {
+                CONFIGURATION.data.appsExtensions = result;
+
+
+                if (callback) callback();
                 process_appsExtensions(result);
             });
-        }
-    });
+        });
+    };
 
-    var appsOrder_ready = [];
-    chrome.storage.sync.get('appsOrder', function (data) {
-        if (data.appsOrder) {
-            CONFIGURATION.data.appsOrder = data.appsOrder;
-        } else {
-            CONFIGURATION.data.appsOrder = false;
-        }
-
-        // callbacks
-        for (var i = 0; i < appsOrder_ready.length; i++) {
-            appsOrder_ready[i]();
-        }
-        appsOrder_ready = [];
-    });
-
-    // fetch recently closed tabs
-    if (window.navigator.appVersion.replace(/.*Chrome\/([0-9.]*).*/,"$1").split('.')[0] > 36) { // sessions api is active only from 37+
+    function retrieve_recentlyClosed(callback) {
         chrome.sessions.getRecentlyClosed(function(result) {
             CONFIGURATION.data.sessions = result;
 
-            if (CONFIGURATION.data.options) {
-                process_sessions(result);
-            } else {
-                options_ready.push(function() {
-                    process_sessions(result);
-                });
-            }
+            if (callback) callback();
+
+            process_sessions(result);
         });
-    }
+    };
+
+    function retrieve_bookmarks(callback) {
+        chrome.bookmarks.getTree(function(result) {
+            CONFIGURATION.data.bookmarks = result;
+
+            if (callback) callback();
+            process_bookmarks(result);
+        });
+    };
+
 
     function process_topSites(result) {
         if (CONFIGURATION.data.options.topSitesVisible) {
@@ -253,49 +255,54 @@ $(document).ready(function() {
         }
     };
 
-    // take care of events
-    chrome.management.onInstalled.addListener(function(info) {
-        if (info.isApp) {
-            // check if app was really installed and we are not just receiving restart event
+    function process_bookmarks(data) {
+        console.log(data);
+    };
+
+    function bind_apps_events() {
+        chrome.management.onInstalled.addListener(function(info) {
+            if (info.isApp) {
+                // check if app was really installed and we are not just receiving restart event
+                for (var i = 0; i < appGrid.grid.length; i++) {
+                    if (appGrid.grid[i].data.id == info.id) return;
+                }
+
+                appGrid.addApp(info);
+            }
+        });
+
+        chrome.management.onUninstalled.addListener(function(id) {
             for (var i = 0; i < appGrid.grid.length; i++) {
-                if (appGrid.grid[i].data.id == info.id) return;
+                if (appGrid.grid[i].data.id == id) {
+                    appGrid.grid[i].element.remove();
+                    appGrid.grid.splice(i, 1);
+                    break;
+                }
             }
+        });
 
-            appGrid.addApp(info);
-        }
-    });
-
-    chrome.management.onUninstalled.addListener(function(id) {
-        for (var i = 0; i < appGrid.grid.length; i++) {
-            if (appGrid.grid[i].data.id == id) {
-                appGrid.grid[i].element.remove();
-                appGrid.grid.splice(i, 1);
-                break;
+        chrome.management.onEnabled.addListener(function(info) {
+            for (var i = 0; i < appGrid.grid.length; i++) {
+                if (appGrid.grid[i].data.id == info.id) {
+                    appGrid.grid[i].element.removeClass('disabled');
+                    appGrid.grid[i].data = info;
+                    break;
+                }
             }
-        }
-    });
+        });
 
-    chrome.management.onEnabled.addListener(function(info) {
-        for (var i = 0; i < appGrid.grid.length; i++) {
-            if (appGrid.grid[i].data.id == info.id) {
-                appGrid.grid[i].element.removeClass('disabled');
-                appGrid.grid[i].data = info;
-                break;
+        chrome.management.onDisabled.addListener(function(info) {
+            for (var i = 0; i < appGrid.grid.length; i++) {
+                if (appGrid.grid[i].data.id == info.id) {
+                    appGrid.grid[i].element.addClass('disabled');
+                    appGrid.grid[i].data = info;
+                    break;
+                }
             }
-        }
-    });
+        });
+    };
 
-    chrome.management.onDisabled.addListener(function(info) {
-        for (var i = 0; i < appGrid.grid.length; i++) {
-            if (appGrid.grid[i].data.id == info.id) {
-                appGrid.grid[i].element.addClass('disabled');
-                appGrid.grid[i].data = info;
-                break;
-            }
-        }
-    });
-
-    if (window.navigator.appVersion.replace(/.*Chrome\/([0-9.]*).*/,"$1").split('.')[0] > 36) {
+    function bind_sessions_events() {
         chrome.sessions.onChanged.addListener(function() {
             // this listener doesn't provide any data which is stupid but it indicates that
             // the recently closed UI/array needs to be updated/repopulated
@@ -306,7 +313,10 @@ $(document).ready(function() {
             });
 
         });
-    }
+    };
+
+    function bind_bookmarks_events() {
+    };
 
 
     function center_top_pages() {
