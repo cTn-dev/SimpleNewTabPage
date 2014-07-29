@@ -216,27 +216,33 @@ $(document).ready(function() {
                 display_n = CONFIGURATION.data.options.sessionsItemsMax;
             }
 
+            function process_data(data, lastModified) {
+                var short_name = data.title;
+                if (data.title.length > 20) {
+                    short_name = data.title.slice(0, 20);
+                    short_name += '...';
+                }
+
+                // result[i].lastModified cannot be used because the returned value is wrong (investigate?)
+                // it seems that the returned value is in seconds, not milliseconds
+                if (lastModified > time_limit && data.url.indexOf('http://') > -1) { // ignore chrome:// pages
+                    var closed_site =
+                        $('<div class="closed-site">\
+                            <img src="chrome://favicon/' + data.url + '" alt="" /><a href="' + data.url + '" title="' + data.title + '">' + short_name + '</a>\
+                        </div>');
+
+                    $('.clear-both', recently_closed_e).before(closed_site);
+                    sites_displayed++;
+                }
+            }
+
             for (var i = 0; i < display_n; i++) {
                 if (result[i].tab) {
-                    var short_name = result[i].tab.title;
-                    if (result[i].tab.title.length > 20) {
-                        short_name = result[i].tab.title.slice(0, 20);
-                        short_name += '...';
-                    }
-
-                    // result[i].lastModified cannot be used because the returned value is wrong (investigate?)
-                    // it seems that the returned value is in seconds, not milliseconds
-                    if (result[i].lastModified > time_limit && result[i].tab.url.indexOf('http://') > -1) { // ignore chrome:// pages
-                        var closed_site =
-                            $('<div class="closed-site">\
-                                <img src="chrome://favicon/' + result[i].tab.url + '" alt="" /><a href="' + result[i].tab.url + '" title="' + result[i].tab.title + '">' + short_name + '</a>\
-                            </div>');
-
-                        $('.clear-both', recently_closed_e).before(closed_site);
-                        sites_displayed++;
-                    }
+                    process_data(result[i].tab, result[i].lastModified);
                 } else if (result[i].window) {
-                    console.log('Missing window property implementation !!!');
+                    for (var j = 0; j < result[i].window.tabs.length; j++) {
+                        process_data(result[i].window.tabs[j], result[i].lastModified);
+                    }
                 }
             }
 
