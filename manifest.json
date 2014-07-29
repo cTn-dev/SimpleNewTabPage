@@ -14,6 +14,7 @@
         "topSites",
         "management",
         "sessions",
+        "bookmarks",
         "tabs",
         "storage",
         "chrome://favicon/"
