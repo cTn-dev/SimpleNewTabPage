@@ -1,6 +1,5 @@
 var appGrid = new function () {
     var self = this;
-    this.grid = [];
 
     this.addApp = function (data) {
         // create element
@@ -14,12 +13,6 @@ var appGrid = new function () {
 
         // bind draggable events
         this.bindDraggable(app);
-
-        // save reference in grid array
-        this.grid.push({
-            'data':     data,
-            'element':  app
-        });
 
         // push to DOM
         $('div#apps .apps-wrapper').append(app);

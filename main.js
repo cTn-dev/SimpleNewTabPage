@@ -259,15 +259,16 @@ $(document).ready(function() {
     };
 
     function process_bookmarks(data) {
-        console.log(data);
+        //console.log(data);
     };
 
     function bind_apps_events() {
         chrome.management.onInstalled.addListener(function(info) {
             if (info.isApp) {
-                // check if app was really installed and we are not just receiving restart event
-                for (var i = 0; i < appGrid.grid.length; i++) {
-                    if (appGrid.grid[i].data.id == info.id) return;
+                var apps = $('div#apps .apps-wrapper .app');
+
+                for (var i = 0; i < apps.length; i++) {
+                    if ($(apps[i]).attr('id') == info.id) return;
                 }
 
                 appGrid.addApp(info);
@@ -275,30 +276,33 @@ $(document).ready(function() {
         });
 
         chrome.management.onUninstalled.addListener(function(id) {
-            for (var i = 0; i < appGrid.grid.length; i++) {
-                if (appGrid.grid[i].data.id == id) {
-                    appGrid.grid[i].element.remove();
-                    appGrid.grid.splice(i, 1);
+            var apps = $('div#apps .apps-wrapper .app');
+
+            for (var i = 0; i < apps.length; i++) {
+                if ($(apps[i]).attr('id') == id) {
+                    $(apps[i]).remove();
                     break;
                 }
             }
         });
 
         chrome.management.onEnabled.addListener(function(info) {
-            for (var i = 0; i < appGrid.grid.length; i++) {
-                if (appGrid.grid[i].data.id == info.id) {
-                    appGrid.grid[i].element.removeClass('disabled');
-                    appGrid.grid[i].data = info;
+            var apps = $('div#apps .apps-wrapper .app');
+
+            for (var i = 0; i < apps.length; i++) {
+                if ($(apps[i]).attr('id') == info.id) {
+                    $(apps[i]).removeClass('disabled');
                     break;
                 }
             }
         });
 
         chrome.management.onDisabled.addListener(function(info) {
-            for (var i = 0; i < appGrid.grid.length; i++) {
-                if (appGrid.grid[i].data.id == info.id) {
-                    appGrid.grid[i].element.addClass('disabled');
-                    appGrid.grid[i].data = info;
+            var apps = $('div#apps .apps-wrapper .app');
+
+            for (var i = 0; i < apps.length; i++) {
+                if ($(apps[i]).attr('id') == info.id) {
+                    $(apps[i]).addClass('disabled');
                     break;
                 }
             }
