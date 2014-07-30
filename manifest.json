@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "minimum_chrome_version": "36",
-    "version": "0.0.1",
+    "version": "0.1",
 
     "author": "cTn",
     "name": "Simple New Tab Page",
@@ -18,5 +18,9 @@
         "tabs",
         "storage",
         "chrome://favicon/"
-    ]
+    ],
+
+    "icons": {
+        "128": "images/icon_128.png"
+    }
 }
