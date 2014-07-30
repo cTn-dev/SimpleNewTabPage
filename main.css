@@ -59,6 +59,8 @@ a:hover {
     border: 2px dashed silver;
     border-radius: 6px;
     background-color: rgba(255, 255, 255, 0.90);
+
+    z-index: 100;
 }
     #options-window .title {
         text-align: center;
