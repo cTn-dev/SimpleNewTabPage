@@ -129,6 +129,7 @@ a:hover {
     }
     #top-pages a {
         color: #585858;
+        white-space: nowrap;
     }
     #top-pages a:hover {
         color: black;
@@ -183,6 +184,12 @@ a:hover {
 
         width: 128px;
         height: 128px;
+    }
+    #apps .app span {
+        display: block;
+
+        white-space: nowrap;
+        overflow: hidden;
     }
     #apps .app.disabled img {
         opacity: 0.75;

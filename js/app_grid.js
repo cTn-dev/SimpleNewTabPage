@@ -95,7 +95,7 @@ var appGrid = new function () {
                 if (name.length < 19) {
                     return name;
                 } else {
-                    var short_name = name.slice(0, 19);
+                    var short_name = name.slice(0, 18);
                     return short_name + '...';
                 }
             }
