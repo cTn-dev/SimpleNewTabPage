@@ -110,6 +110,15 @@ $(document).ready(function() {
             chrome.management.getAll(function(result) {
                 CONFIGURATION.data.appsExtensions = result;
 
+                // create chrome store shortcut manually
+                CONFIGURATION.data.appsExtensions.push({
+                    'isApp': true,
+                    'enabled': true,
+                    'mayDisable': false,
+                    'id': 'ahfgeienlihckogmohjhadlkjgocpleb',
+                    'name': 'Store',
+                    'icons': [{'size': 128, 'url': './images/icon_store.png'}]
+                });
 
                 if (callback) callback();
                 process_appsExtensions(result);
