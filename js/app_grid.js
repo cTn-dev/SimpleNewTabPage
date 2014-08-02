@@ -71,22 +71,26 @@ var appGrid = new function () {
 
     this.helpers = new function () {
         this.getIcon = function (iconArr) {
-            var len = iconArr.length;
+            if (iconArr) {
+                var len = iconArr.length;
 
-            if (len > 1) {
-                var best_size = 0;
-                var best_size_index = 0;
+                if (len > 1) {
+                    var best_size = 0;
+                    var best_size_index = 0;
 
-                for (var i = 0; i < len; i++) {
-                    if (iconArr[i].size > best_size) {
-                        best_size = iconArr[i].size;
-                        best_size_index = i;
+                    for (var i = 0; i < len; i++) {
+                        if (iconArr[i].size > best_size) {
+                            best_size = iconArr[i].size;
+                            best_size_index = i;
+                        }
                     }
-                }
 
-                return iconArr[best_size_index].url;
+                    return iconArr[best_size_index].url;
+                } else {
+                    return iconArr[0].url;
+                }
             } else {
-                return iconArr[0].url;
+                return './images/icon_not_set.png';
             }
         };
 
