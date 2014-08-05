@@ -77,7 +77,7 @@ $(document).ready(function() {
                 chrome.storage.sync.set({'hiddenTopSites': CONFIGURATION.data.hiddenTopSites});
                 site_hover.element.remove();
             });
-        }, 2500);
+        }, 2000);
     });
 
     top_pages_e.on('mouseleave', 'div.site', function() {

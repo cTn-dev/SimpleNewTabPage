@@ -20,6 +20,13 @@ $(document).ready(function() {
                     .next()
                     .text(CONFIGURATION.data.options.sessionsItemsMax);
 
+                $('a.restoreTopSites').click(function() {
+                    $(this).addClass('restored');
+                    CONFIGURATION.status.optionsChanged = true;
+
+                    chrome.storage.sync.remove('hiddenTopSites');
+                });
+
                 // bind events
                 $('div#options-window input[type="checkbox"]').change(function() {
                     CONFIGURATION.status.optionsChanged = true;
