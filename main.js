@@ -2,6 +2,7 @@ var CONFIGURATION = {
     'data': {
         'options':          null,
         'topSites':         null,
+        'hiddenTopSites':   null,
         'appsExtensions':   null,
         'appsOrder':        null,
         'sessions':         null,
@@ -50,6 +51,51 @@ $(document).ready(function() {
         return false;
     });
 
+    var site_hover = {
+        element: null,
+        timer: null,
+        active: false,
+        reference: null,
+    };
+
+    top_pages_e.on('mouseenter', 'div.site a:not(.disable)', function() {
+        site_hover.element = $(this).parent();
+        site_hover.timer = setTimeout(function() {
+            site_hover.active = true;
+            site_hover.reference = $('<a href="#" class="disable" title="Hide from the list"></a>');
+            site_hover.element.append(site_hover.reference);
+
+            site_hover.reference.click(function() {
+                var url = site_hover.element.find('a:first').attr('href');
+
+                if (CONFIGURATION.data.hiddenTopSites) {
+                    CONFIGURATION.data.hiddenTopSites.push(url);
+                } else {
+                    CONFIGURATION.data.hiddenTopSites = [url];
+                }
+
+                chrome.storage.sync.set({'hiddenTopSites': CONFIGURATION.data.hiddenTopSites});
+                site_hover.element.remove();
+            });
+        }, 2500);
+    });
+
+    top_pages_e.on('mouseleave', 'div.site', function() {
+        var element = $(this);
+
+        if (site_hover.element) {
+            if (site_hover.element[0] == element[0]) {
+                clearTimeout(site_hover.timer);
+
+                if (site_hover.active) {
+                    site_hover.element = null;
+                    site_hover.active = false;
+                    site_hover.reference.remove();
+                }
+            }
+        }
+    });
+
     // get settings
     chrome.storage.sync.get('options', function(data) {
         if (data.options) {
@@ -90,17 +136,26 @@ $(document).ready(function() {
     });
 
     function retrieve_topSites(callback) {
-        chrome.topSites.get(function(result) {
-            CONFIGURATION.data.topSites = result;
+        // fetch filter
+        chrome.storage.sync.get('hiddenTopSites', function(data) {
+            if (data.hiddenTopSites) {
+                CONFIGURATION.data.hiddenTopSites = data.hiddenTopSites;
+            } else {
+                CONFIGURATION.data.hiddenTopSites = false;
+            }
 
-            if (callback) callback(result);
-            process_topSites(result);
+            chrome.topSites.get(function(result) {
+                CONFIGURATION.data.topSites = result;
+
+                if (callback) callback(result);
+                process_topSites(result);
+            });
         });
     };
 
     function retrieve_apps(callback) {
         // fetch order
-        chrome.storage.sync.get('appsOrder', function (data) {
+        chrome.storage.sync.get('appsOrder', function(data) {
             if (data.appsOrder) {
                 CONFIGURATION.data.appsOrder = data.appsOrder;
             } else {
@@ -155,18 +210,29 @@ $(document).ready(function() {
             }
 
             for (var i = 0; i < display_n; i++) {
-                var short_name = result[i].title;
-                if (result[i].title.length > 20) {
-                    short_name = result[i].title.slice(0, 19);
-                    short_name += '...';
+                var display = true;
+                if (CONFIGURATION.data.hiddenTopSites) {
+                    if (CONFIGURATION.data.hiddenTopSites.indexOf(result[i].url) != -1) {
+                        display = false;
+
+                        if (display_n < 20) display_n++;
+                    }
                 }
 
-                var site =
-                    $('<div class="site">\
-                        <img src="chrome://favicon/' + result[i].url + '" alt=""/><a href="' + result[i].url + '" title="' + result[i].title + '">' + short_name + '</a>\
-                    </div>');
+                if (display) {
+                    var short_name = result[i].title;
+                    if (result[i].title.length > 20) {
+                        short_name = result[i].title.slice(0, 19);
+                        short_name += '...';
+                    }
 
-                top_pages_e.append(site);
+                    var site =
+                        $('<div class="site">\
+                            <img src="chrome://favicon/' + result[i].url + '" alt=""/><a href="' + result[i].url + '" title="' + result[i].title + '">' + short_name + '</a>\
+                        </div>');
+
+                    top_pages_e.append(site);
+                }
             }
 
             center_top_pages();

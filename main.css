@@ -120,12 +120,13 @@ a:hover {
 
         width: 180px;
         height: 20px;
+        line-height: 20px;
 
         margin: 0 0 5px 0;
     }
     #top-pages .site img {
         float: left;
-        margin: 3px 5px 0 0;
+        margin: 2px 5px 0 0;
     }
     #top-pages a {
         color: #585858;
@@ -133,6 +134,23 @@ a:hover {
     }
     #top-pages a:hover {
         color: black;
+    }
+    #top-pages .site a.disable {
+        position: relative;
+        display: block;
+        width: 14px;
+        height: 14px;
+
+        top: -17px;
+        left: 160px;
+
+        background-image: url('../images/close.svg');
+        background-repeat: no-repeat;
+
+        opacity: 0.5;
+    }
+    #top-pages .site a.disable:hover {
+        opacity: 0.75;
     }
 #apps {
     display: none;
