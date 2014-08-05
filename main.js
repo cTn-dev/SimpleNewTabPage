@@ -61,22 +61,24 @@ $(document).ready(function() {
     top_pages_e.on('mouseenter', 'div.site a:not(.disable)', function() {
         site_hover.element = $(this).parent();
         site_hover.timer = setTimeout(function() {
-            site_hover.active = true;
-            site_hover.reference = $('<a href="#" class="disable" title="Hide from the list"></a>');
-            site_hover.element.append(site_hover.reference);
+            if (!site_hover.active) {
+                site_hover.active = true;
+                site_hover.reference = $('<a href="#" class="disable" title="Hide from the list"></a>');
+                site_hover.element.append(site_hover.reference);
 
-            site_hover.reference.click(function() {
-                var url = site_hover.element.find('a:first').attr('href');
+                site_hover.reference.click(function() {
+                    var url = site_hover.element.find('a:first').attr('href');
 
-                if (CONFIGURATION.data.hiddenTopSites) {
-                    CONFIGURATION.data.hiddenTopSites.push(url);
-                } else {
-                    CONFIGURATION.data.hiddenTopSites = [url];
-                }
+                    if (CONFIGURATION.data.hiddenTopSites) {
+                        CONFIGURATION.data.hiddenTopSites.push(url);
+                    } else {
+                        CONFIGURATION.data.hiddenTopSites = [url];
+                    }
 
-                chrome.storage.sync.set({'hiddenTopSites': CONFIGURATION.data.hiddenTopSites});
-                site_hover.element.remove();
-            });
+                    chrome.storage.sync.set({'hiddenTopSites': CONFIGURATION.data.hiddenTopSites});
+                    site_hover.element.remove();
+                });
+            }
         }, 2000);
     });
 
