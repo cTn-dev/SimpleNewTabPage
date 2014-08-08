@@ -91,13 +91,6 @@ a:hover {
     #options-window a:hover {
         text-decoration: underline;
     }
-    #options-window a.restored {
-        font-weight: bold;
-    }
-    #options-window a.restored:hover {
-        text-decoration: none;
-        cursor: default;
-    }
 #bookmarks {
     display: none;
     width: 50%;

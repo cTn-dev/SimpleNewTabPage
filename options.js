@@ -20,12 +20,20 @@ $(document).ready(function() {
                     .next()
                     .text(CONFIGURATION.data.options.sessionsItemsMax);
 
-                $('a.restoreTopSites').click(function() {
-                    $(this).addClass('restored');
-                    CONFIGURATION.status.optionsChanged = true;
+                if (CONFIGURATION.data.hiddenTopSites.length) {
+                    $('a.restoreTopSites').click(function() {
+                        var self = $(this);
 
-                    chrome.storage.sync.remove('hiddenTopSites');
-                });
+                        if (confirm('Do you want to restore hidden most visited pages?')) {
+                            CONFIGURATION.status.optionsChanged = true;
+                            chrome.storage.sync.remove('hiddenTopSites');
+
+                            self.hide();
+                        }
+                    });
+                } else {
+                    $('a.restoreTopSites').hide();
+                }
 
                 // bind events
                 $('div#options-window input[type="checkbox"]').change(function() {
