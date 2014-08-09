@@ -1,3 +1,5 @@
+'use strict';
+
 var CONFIGURATION = {
     'data': {
         'options':          null,
@@ -285,6 +287,26 @@ $(document).ready(function() {
     };
 
     function process_sessions(result) {
+        function process_data(data, lastModified) {
+            var short_name = data.title;
+            if (data.title.length > 20) {
+                short_name = data.title.slice(0, 19);
+                short_name += '...';
+            }
+
+            // result[i].lastModified cannot be used because the returned value is wrong (investigate?)
+            // it seems that the returned value is in seconds, not milliseconds
+            if (lastModified > time_limit && data.url.indexOf('http://') > -1) { // ignore chrome:// pages
+                var closed_site =
+                    $('<div class="closed-site">\
+                        <img src="chrome://favicon/' + data.url + '" alt="" /><a href="' + data.url + '" title="' + data.title + '">' + short_name + '</a>\
+                    </div>');
+
+                recently_closed_e.append(closed_site);
+                sites_displayed++;
+            }
+        }
+
         if (CONFIGURATION.data.options.sessionsVisible) {
             // dump previous elements
             recently_closed_e.empty();
@@ -296,26 +318,6 @@ $(document).ready(function() {
 
             if (display_n > CONFIGURATION.data.options.sessionsItemsMax) {
                 display_n = CONFIGURATION.data.options.sessionsItemsMax;
-            }
-
-            function process_data(data, lastModified) {
-                var short_name = data.title;
-                if (data.title.length > 20) {
-                    short_name = data.title.slice(0, 19);
-                    short_name += '...';
-                }
-
-                // result[i].lastModified cannot be used because the returned value is wrong (investigate?)
-                // it seems that the returned value is in seconds, not milliseconds
-                if (lastModified > time_limit && data.url.indexOf('http://') > -1) { // ignore chrome:// pages
-                    var closed_site =
-                        $('<div class="closed-site">\
-                            <img src="chrome://favicon/' + data.url + '" alt="" /><a href="' + data.url + '" title="' + data.title + '">' + short_name + '</a>\
-                        </div>');
-
-                    recently_closed_e.append(closed_site);
-                    sites_displayed++;
-                }
             }
 
             for (var i = 0; i < display_n; i++) {
