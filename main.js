@@ -61,43 +61,36 @@ $(document).ready(function() {
     };
 
     top_pages_e.on('mouseenter', 'div.site a:not(.disable)', function() {
-        site_hover.element = $(this).parent();
-        site_hover.timer = setTimeout(function() {
-            if (!site_hover.active) {
-                site_hover.active = true;
-                site_hover.reference = $('<a href="#" class="disable" title="Hide from the list"></a>');
-                site_hover.element.append(site_hover.reference);
+        var element = $(this).parent();
+        element.addClass('hovering');
 
-                site_hover.reference.click(function() {
-                    var url = site_hover.element.find('a:first').attr('href');
-
-                    if (CONFIGURATION.data.hiddenTopSites) {
-                        CONFIGURATION.data.hiddenTopSites.push(url);
-                    } else {
-                        CONFIGURATION.data.hiddenTopSites = [url];
-                    }
-
-                    chrome.storage.sync.set({'hiddenTopSites': CONFIGURATION.data.hiddenTopSites});
-                    site_hover.element.remove();
-                });
+        setTimeout(function() {
+            if (element.hasClass('hovering')) {
+                element.addClass('editing');
             }
-        }, 2000);
+        }, 1500);
     });
 
     top_pages_e.on('mouseleave', 'div.site', function() {
         var element = $(this);
+        element.removeClass('hovering editing')
+    });
 
-        if (site_hover.element) {
-            if (site_hover.element[0] == element[0]) {
-                clearTimeout(site_hover.timer);
+    top_pages_e.on('click', 'div.site a.disable', function() {
+        var element = $(this).parent();
+        var url = element.find('a:first').attr('href');
 
-                if (site_hover.active) {
-                    site_hover.element = null;
-                    site_hover.active = false;
-                    site_hover.reference.remove();
-                }
-            }
+        if (CONFIGURATION.data.hiddenTopSites) {
+            CONFIGURATION.data.hiddenTopSites.push(url);
+        } else {
+            CONFIGURATION.data.hiddenTopSites = [url];
         }
+
+        // remove element from UI
+        element.remove();
+
+        // save changes
+        chrome.storage.sync.set({'hiddenTopSites': CONFIGURATION.data.hiddenTopSites});
     });
 
     // get settings
@@ -232,7 +225,9 @@ $(document).ready(function() {
 
                     var site =
                         $('<div class="site">\
-                            <img src="chrome://favicon/' + result[i].url + '" alt=""/><a href="' + result[i].url + '" title="' + result[i].title + '">' + short_name + '</a>\
+                            <img src="chrome://favicon/' + result[i].url + '" />\
+                            <a href="' + result[i].url + '" title="' + result[i].title + '">' + short_name + '</a>\
+                            <a href="#" class="disable" title="Hide from the list"></a>\
                         </div>');
 
                     top_pages_e.append(site);

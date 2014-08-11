@@ -139,6 +139,9 @@ a:hover {
         color: black;
     }
     #top-pages .site a.disable {
+        display: none;
+    }
+    #top-pages .site.editing a.disable {
         position: relative;
         display: block;
         width: 14px;
