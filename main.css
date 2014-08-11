@@ -139,7 +139,9 @@ a:hover {
         color: black;
     }
     #top-pages .site a.disable {
-        display: none;
+        opacity: 0;
+
+        -webkit-transition: all 0.5s;
     }
     #top-pages .site.editing a.disable {
         position: relative;
