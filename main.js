@@ -103,14 +103,16 @@ $(document).ready(function() {
                 }
 
                 $('div#contextMenu').remove();
-                $(document).unbind('click scroll', clickHandler);
+                $('body').unbind('click scroll', clickHandler);
+                return false;
             } else if (!$(ev.target).is('div#contextMenu')) {
                 $('div#contextMenu').remove();
-                $(document).unbind('click scroll', clickHandler);
+                $('body').unbind('click scroll', clickHandler);
+                return false;
             }
         };
 
-        $(document).bind('click scroll', clickHandler);
+        $('body').bind('click scroll', clickHandler);
         return false;
     });
 
