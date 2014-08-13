@@ -103,16 +103,16 @@ $(document).ready(function() {
                 }
 
                 $('div#contextMenu').remove();
-                $('body').unbind('click scroll', clickHandler);
+                $('body').unbind('click mousewheel', clickHandler);
                 return false;
             } else if (!$(ev.target).is('div#contextMenu')) {
                 $('div#contextMenu').remove();
-                $('body').unbind('click scroll', clickHandler);
+                $('body').unbind('click mousewheel', clickHandler);
                 return false;
             }
         };
 
-        $('body').bind('click scroll', clickHandler);
+        $('body').bind('click mousewheel', clickHandler);
         return false;
     });
 
