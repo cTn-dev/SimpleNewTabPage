@@ -12,7 +12,6 @@ body {
     font-family: 'Segoe UI', Tahoma, sans-serif;
     font-size: 14px;
     color: #303030;
-    -webkit-text-size-adjust: 100%;
 }
 a {
     text-decoration: none;
