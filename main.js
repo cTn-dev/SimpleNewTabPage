@@ -53,11 +53,13 @@ $(document).ready(function() {
             $('div#contextMenu').remove();
         }
 
+        var disable = $(this).hasClass('disabled') ? 'Enable' : 'Disable';
+
         var contextMenu = $('\
             <div id="contextMenu">\
                 <ul>\
                     <li class="hide">Hide</li>\
-                    <li class="disable">Disable</li>\
+                    <li class="disable">' + disable + '</li>\
                     <li class="uninstall">Uninstall</li>\
                 </ul>\
             </div>\
@@ -86,7 +88,11 @@ $(document).ready(function() {
                         chrome.storage.sync.set({'appsHidden': CONFIGURATION.data.appsHidden});
                         break;
                     case 'disable':
-                        chrome.management.setEnabled(id, false, null);
+                        if (!$('#' + id).hasClass('disabled')) {
+                            chrome.management.setEnabled(id, false, null);
+                        } else {
+                            chrome.management.setEnabled(id, true, null);
+                        }
                         break;
                     case 'uninstall':
                         chrome.management.uninstall(id, {'showConfirmDialog': true}, null);
