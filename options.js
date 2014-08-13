@@ -29,12 +29,23 @@ $(document).ready(function () {
                         if (confirm('Do you want to restore hidden most visited pages?')) {
                             CONFIGURATION.status.optionsChanged = true;
                             chrome.storage.sync.remove('hiddenTopSites');
-
-                            self.hide();
                         }
                     });
                 } else {
                     $('a.restoreTopSites').hide();
+                }
+
+                if (CONFIGURATION.data.appsHidden) {
+                    $('a.restoreApps').click(function () {
+                        var self = $(this);
+
+                        if (confirm('Do you want to restore hidden applications?')) {
+                            CONFIGURATION.status.optionsChanged = true;
+                            chrome.storage.sync.remove('appsHidden');
+                        }
+                    });
+                } else {
+                    $('a.restoreApps').hide();
                 }
 
                 // bind events
