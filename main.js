@@ -47,6 +47,53 @@ $(document).ready(function() {
         return false;
     });
 
+    $('div#apps .apps-wrapper').on('contextmenu', 'div.app', function(ev) {
+        // if one context menu already exists, remove it
+        if ($('div#contextMenu').length) {
+            $('div#contextMenu').remove();
+        }
+
+        var contextMenu = $('\
+            <div id="contextMenu">\
+                <ul>\
+                    <li class="hide">Hide</li>\
+                    <li class="disable">Disable</li>\
+                    <li class="uninstall">Uninstall</li>\
+                </ul>\
+            </div>\
+        ').css({'top': ev.clientY + 2, 'left': ev.clientX + 2}).data('id', $(this).attr('id'));
+
+        $('body').append(contextMenu);
+
+        function clickHandler(ev) {
+            if ($.contains($('div#contextMenu')[0], ev.target)) {
+                var action = $(ev.target).attr('class'),
+                    id = $('div#contextMenu').data('id');
+
+                switch (action) {
+                    case 'hide':
+                        break;
+                    case 'disable':
+                        break;
+                    case 'uninstall':
+                        break;
+
+                    default:
+                        console.log('Unknown contextmenu function selected');
+                }
+
+                $('div#contextMenu').remove();
+                $(document).unbind('click scroll', clickHandler);
+            } else if (!$(ev.target).is('div#contextMenu')) {
+                $('div#contextMenu').remove();
+                $(document).unbind('click scroll', clickHandler);
+            }
+        };
+
+        $(document).bind('click scroll', clickHandler);
+        return false;
+    });
+
     $('div#top-pages .top-pages-wrapper').on('mouseenter', 'div.site a:not(.disable)', function() {
         var element = $(this).parent();
         element.addClass('hovering');

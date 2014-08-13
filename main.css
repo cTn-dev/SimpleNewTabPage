@@ -249,3 +249,23 @@ a:hover {
     #recently-closed-pages a:hover {
         color: black;
     }
+#contextMenu {
+    position: absolute;
+
+    width: 120px;
+    padding: 10px 0 10px 0;
+
+    color: black;
+    cursor: default;
+    -webkit-user-select: none;
+
+    background-color: white;
+    border: 1px solid #a2a2a2;
+}
+    #contextMenu li {
+        padding-left: 20px;
+        line-height: 20px;
+    }
+    #contextMenu li:hover {
+        background-color: #d9d9d9;
+    }
