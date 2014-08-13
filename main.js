@@ -7,6 +7,7 @@ var CONFIGURATION = {
         'hiddenTopSites':   null,
         'appsExtensions':   null,
         'appsOrder':        null,
+        'appsHidden':       null,
         'sessions':         null,
         'bookmarks':        null,
     },
@@ -20,13 +21,6 @@ $(document).ready(function() {
     // to capture information about files dropped into the browser window
     jQuery.event.props.push("dataTransfer");
 
-    var top_pages_c = $('div#top-pages');
-    var top_pages_e = $('div#top-pages .top-pages-wrapper');
-    var apps_c = $('div#apps');
-    var apps_e = $('div#apps .apps-wrapper');
-    var recently_closed_c = $('div#recently-closed-pages');
-    var recently_closed_e = $('div#recently-closed-pages .recently-closed-pages-wrapper');
-
     // bind live events
     $(window).resize(function() {
         center_top_pages();
@@ -34,7 +28,7 @@ $(document).ready(function() {
         center_recently_closed();
     });
 
-    apps_e.on('click', 'div.app', function() {
+    $('div#apps .apps-wrapper').on('click', 'div.app', function() {
         chrome.management.launchApp($(this).attr('id'));
 
         if (!$(this).hasClass('disabled')) {
@@ -53,14 +47,7 @@ $(document).ready(function() {
         return false;
     });
 
-    var site_hover = {
-        element: null,
-        timer: null,
-        active: false,
-        reference: null,
-    };
-
-    top_pages_e.on('mouseenter', 'div.site a:not(.disable)', function() {
+    $('div#top-pages .top-pages-wrapper').on('mouseenter', 'div.site a:not(.disable)', function() {
         var element = $(this).parent();
         element.addClass('hovering');
 
@@ -71,12 +58,12 @@ $(document).ready(function() {
         }, 1500);
     });
 
-    top_pages_e.on('mouseleave', 'div.site', function() {
+    $('div#top-pages .top-pages-wrapper').on('mouseleave', 'div.site', function() {
         var element = $(this);
         element.removeClass('hovering editing')
     });
 
-    top_pages_e.on('click', 'div.site a.disable', function() {
+    $('div#top-pages .top-pages-wrapper').on('click', 'div.site a.disable', function() {
         var element = $(this).parent();
         var url = element.find('a:first').attr('href');
 
@@ -151,14 +138,31 @@ $(document).ready(function() {
     };
 
     function retrieve_apps(callback) {
-        // fetch order
-        chrome.storage.sync.get('appsOrder', function(data) {
-            if (data.appsOrder) {
-                CONFIGURATION.data.appsOrder = data.appsOrder;
-            } else {
-                CONFIGURATION.data.appsOrder = false;
-            }
+        function order() {
+            chrome.storage.sync.get('appsOrder', function(data) {
+                if (data.appsOrder) {
+                    CONFIGURATION.data.appsOrder = data.appsOrder;
+                } else {
+                    CONFIGURATION.data.appsOrder = false;
+                }
 
+                visibility();
+            });
+        };
+
+        function visibility() {
+            chrome.storage.sync.get('appsHidden', function(data) {
+                if (data.appsHidden) {
+                    CONFIGURATION.data.appsHidden = data.appsHidden;
+                } else {
+                    CONFIGURATION.data.appsHidden = false;
+                }
+
+                apps();
+            });
+        };
+
+        function apps() {
             chrome.management.getAll(function(result) {
                 CONFIGURATION.data.appsExtensions = result;
 
@@ -175,7 +179,9 @@ $(document).ready(function() {
                 if (callback) callback();
                 process_appsExtensions(result);
             });
-        });
+        };
+
+        order();
     };
 
     function retrieve_recentlyClosed(callback) {
@@ -200,7 +206,8 @@ $(document).ready(function() {
 
     function process_topSites(result) {
         if (CONFIGURATION.data.options.topSitesVisible) {
-            var display_n = result.length;
+            var display_n = result.length,
+                container = $('div#top-pages .top-pages-wrapper');
 
             if (display_n > CONFIGURATION.data.options.topSitesItemsMax) {
                 display_n = CONFIGURATION.data.options.topSitesItemsMax;
@@ -230,12 +237,12 @@ $(document).ready(function() {
                             <a href="#" class="disable" title="Hide from the list"></a>\
                         </div>');
 
-                    top_pages_e.append(site);
+                    container.append(site);
                 }
             }
 
             center_top_pages();
-            top_pages_c.fadeIn(100);
+            $('div#top-pages').fadeIn(100);
         }
     };
 
@@ -277,7 +284,7 @@ $(document).ready(function() {
             }
 
             center_apps();
-            apps_c.fadeIn(100);
+            $('div#apps').fadeIn(100);
         }
     };
 
@@ -297,7 +304,7 @@ $(document).ready(function() {
                         <img src="chrome://favicon/' + data.url + '" alt="" /><a href="' + data.url + '" title="' + data.title + '">' + short_name + '</a>\
                     </div>');
 
-                recently_closed_e.append(closed_site);
+                $('div#recently-closed-pages .recently-closed-pages-wrapper').append(closed_site);
                 sites_displayed++;
             }
         }
@@ -327,7 +334,7 @@ $(document).ready(function() {
 
             if (sites_displayed) {
                 center_recently_closed();
-                recently_closed_c.fadeIn(100);
+                $('div#recently-closed-pages').fadeIn(100);
             }
         }
     };
@@ -400,6 +407,9 @@ $(document).ready(function() {
     };
 
 
+    var top_pages_c = $('div#top-pages'),
+        top_pages_e = $('div#top-pages .top-pages-wrapper');
+
     function center_top_pages() {
         var container_w = top_pages_c.width();
         var site_w = $('div.site', top_pages_c).outerWidth();
@@ -409,6 +419,9 @@ $(document).ready(function() {
         top_pages_e.css({'margin-left': (blank_space / 2)});
     }
 
+    var apps_c = $('div#apps'),
+        apps_e = $('div#apps .apps-wrapper');
+
     function center_apps() {
         var container_w = apps_c.width();
         var app_w = $('div.app', apps_c).outerWidth();
@@ -417,6 +430,9 @@ $(document).ready(function() {
 
         apps_e.css({'margin-left': (blank_space / 2)});
     }
+
+    var recently_closed_c = $('div#recently-closed-pages'),
+        recently_closed_e = $('div#recently-closed-pages .recently-closed-pages-wrapper');
 
     function center_recently_closed() {
         var container_w = recently_closed_c.width();
