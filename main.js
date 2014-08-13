@@ -72,8 +72,21 @@ $(document).ready(function() {
 
                 switch (action) {
                     case 'hide':
+                        if (CONFIGURATION.data.appsHidden) {
+                            CONFIGURATION.data.appsHidden.push(id);
+
+                        } else {
+                            CONFIGURATION.data.appsHidden = [id];
+                        }
+
+                        // remove element from UI
+                        $('#' + id).remove();
+
+                        // save changes
+                        chrome.storage.sync.set({'appsHidden': CONFIGURATION.data.appsHidden});
                         break;
                     case 'disable':
+                        chrome.management.setEnabled(id, false, null);
                         break;
                     case 'uninstall':
                         break;
@@ -299,6 +312,15 @@ $(document).ready(function() {
             for (var i = result.length - 1; i >= 0; i--) {
                 if (result[i].isApp == false) {
                     result.splice(i, 1);
+                }
+            }
+
+            // filter out hidden apps
+            if (CONFIGURATION.data.appsHidden) {
+                for (var i = result.length - 1; i >= 0; i--) {
+                    if (CONFIGURATION.data.appsHidden.indexOf(result[i].id) > -1) {
+                        result.splice(i, 1);
+                    }
                 }
             }
 
