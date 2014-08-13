@@ -89,6 +89,7 @@ $(document).ready(function() {
                         chrome.management.setEnabled(id, false, null);
                         break;
                     case 'uninstall':
+                        chrome.management.uninstall(id, {'showConfirmDialog': true}, null);
                         break;
 
                     default:
@@ -432,6 +433,13 @@ $(document).ready(function() {
                 if ($(apps[i]).attr('id') == id) {
                     $(apps[i]).remove();
                     break;
+                }
+            }
+
+            // remove app from the appsHidden array so strings doesn't build up here
+            if (CONFIGURATION.data.appsHidden) {
+                if (CONFIGURATION.data.appsHidden.indexOf(id)) {
+                    CONFIGURATION.data.appsHidden.splice(CONFIGURATION.data.appsHidden.indexOf(id), 1);
                 }
             }
         });
