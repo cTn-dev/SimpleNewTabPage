@@ -68,51 +68,53 @@ $(document).ready(function() {
         $('body').append(contextMenu);
 
         function clickHandler(ev) {
-            if ($.contains($('div#contextMenu')[0], ev.target)) {
-                var action = $(ev.target).attr('class'),
-                    id = $('div#contextMenu').data('id');
+            if ($('div#contextMenu')[0]) {
+                if ($.contains($('div#contextMenu')[0], ev.target)) {
+                    var action = $(ev.target).attr('class'),
+                        id = $('div#contextMenu').data('id');
 
-                switch (action) {
-                    case 'hide':
-                        if (CONFIGURATION.data.appsHidden) {
-                            CONFIGURATION.data.appsHidden.push(id);
+                    switch (action) {
+                        case 'hide':
+                            if (CONFIGURATION.data.appsHidden) {
+                                CONFIGURATION.data.appsHidden.push(id);
 
-                        } else {
-                            CONFIGURATION.data.appsHidden = [id];
-                        }
+                            } else {
+                                CONFIGURATION.data.appsHidden = [id];
+                            }
 
-                        // remove element from UI
-                        $('#' + id).remove();
+                            // remove element from UI
+                            $('#' + id).remove();
 
-                        // save changes
-                        chrome.storage.sync.set({'appsHidden': CONFIGURATION.data.appsHidden});
-                        break;
-                    case 'disable':
-                        if (!$('#' + id).hasClass('disabled')) {
-                            chrome.management.setEnabled(id, false, null);
-                        } else {
-                            chrome.management.setEnabled(id, true, null);
-                        }
-                        break;
-                    case 'uninstall':
-                        chrome.management.uninstall(id, {'showConfirmDialog': true}, null);
-                        break;
+                            // save changes
+                            chrome.storage.sync.set({'appsHidden': CONFIGURATION.data.appsHidden});
+                            break;
+                        case 'disable':
+                            if (!$('#' + id).hasClass('disabled')) {
+                                chrome.management.setEnabled(id, false, null);
+                            } else {
+                                chrome.management.setEnabled(id, true, null);
+                            }
+                            break;
+                        case 'uninstall':
+                            chrome.management.uninstall(id, {'showConfirmDialog': true}, null);
+                            break;
 
-                    default:
-                        console.log('Unknown contextmenu function selected');
+                        default:
+                            console.log('Unknown contextmenu function selected');
+                    }
+
+                    $('div#contextMenu').remove();
+                    $(document).unbind('click mousewheel contextmenu', clickHandler);
+                } else if (!$(ev.target).is('div#contextMenu')) {
+                    $('div#contextMenu').remove();
+                    $(document).unbind('click mousewheel contextmenu', clickHandler);
                 }
-
-                $('div#contextMenu').remove();
-                $('body').unbind('click mousewheel', clickHandler);
-                return false;
-            } else if (!$(ev.target).is('div#contextMenu')) {
-                $('div#contextMenu').remove();
-                $('body').unbind('click mousewheel', clickHandler);
-                return false;
+            } else {
+                $(document).unbind('click mousewheel contextmenu', clickHandler);
             }
         };
 
-        $('body').bind('click mousewheel', clickHandler);
+        $(document).bind('click mousewheel contextmenu', clickHandler);
         return false;
     });
 
