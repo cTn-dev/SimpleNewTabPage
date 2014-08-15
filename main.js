@@ -86,7 +86,7 @@ $(document).ready(function() {
                             $('#' + id).remove();
 
                             // save changes
-                            chrome.storage.sync.set({'appsHidden': CONFIGURATION.data.appsHidden});
+                            STORAGE.set({'appsHidden': CONFIGURATION.data.appsHidden});
                             break;
                         case 'disable':
                             if (!$('#' + id).hasClass('disabled')) {
@@ -148,11 +148,11 @@ $(document).ready(function() {
         element.remove();
 
         // save changes
-        chrome.storage.sync.set({'hiddenTopSites': CONFIGURATION.data.hiddenTopSites});
+        STORAGE.set({'hiddenTopSites': CONFIGURATION.data.hiddenTopSites});
     });
 
     // get settings
-    chrome.storage.sync.get('options', function(data) {
+    STORAGE.get('options', function(data) {
         if (data.options) {
             CONFIGURATION.data.options = data.options;
         } else {
@@ -192,7 +192,7 @@ $(document).ready(function() {
 
     function retrieve_topSites(callback) {
         // fetch filter
-        chrome.storage.sync.get('hiddenTopSites', function(data) {
+        STORAGE.get('hiddenTopSites', function(data) {
             if (data.hiddenTopSites) {
                 CONFIGURATION.data.hiddenTopSites = data.hiddenTopSites;
             } else {
@@ -210,7 +210,7 @@ $(document).ready(function() {
 
     function retrieve_apps(callback) {
         function order() {
-            chrome.storage.sync.get('appsOrder', function(data) {
+            STORAGE.get('appsOrder', function(data) {
                 if (data.appsOrder) {
                     CONFIGURATION.data.appsOrder = data.appsOrder;
                 } else {
@@ -222,7 +222,7 @@ $(document).ready(function() {
         };
 
         function visibility() {
-            chrome.storage.sync.get('appsHidden', function(data) {
+            STORAGE.get('appsHidden', function(data) {
                 if (data.appsHidden) {
                     CONFIGURATION.data.appsHidden = data.appsHidden;
                 } else {

@@ -28,11 +28,11 @@ $(document).ready(function () {
 
                         if (confirm('Do you want to restore hidden most visited pages?')) {
                             CONFIGURATION.status.optionsChanged = true;
-                            chrome.storage.sync.remove('hiddenTopSites');
+                            STORAGE.remove('hiddenTopSites');
                         }
                     });
                 } else {
-                    $('a.restoreTopSites').hide();
+                    $('a.restoreTopSites').prop('disable', true);
                 }
 
                 if (CONFIGURATION.data.appsHidden) {
@@ -41,11 +41,11 @@ $(document).ready(function () {
 
                         if (confirm('Do you want to restore hidden applications?')) {
                             CONFIGURATION.status.optionsChanged = true;
-                            chrome.storage.sync.remove('appsHidden');
+                            STORAGE.remove('appsHidden');
                         }
                     });
                 } else {
-                    $('a.restoreApps').hide();
+                    $('a.restoreApps').prop('disable', true);
                 }
 
                 // bind events
@@ -63,7 +63,7 @@ $(document).ready(function () {
 
                     $(this).next('.amount').text(val);
 
-                    CONFIGURATION.data.options[property] = val;
+                    CONFIGURATION.data.options[property] = parseInt(val, 10);
                     CONFIGURATION.status.optionsChanged = true;
                 });
 
@@ -78,7 +78,7 @@ $(document).ready(function () {
                             $(this).empty().remove();
 
                             if (CONFIGURATION.status.optionsChanged) {
-                                chrome.storage.sync.set({'options': CONFIGURATION.data.options}, function () {
+                                STORAGE.set({'options': CONFIGURATION.data.options}, function () {
                                     chrome.tabs.getCurrent(function (tab) {
                                         chrome.tabs.reload(tab.id);
                                     });

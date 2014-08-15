@@ -56,7 +56,7 @@ var appGrid = new function () {
             arr.push($(this).attr('id'));
         });
 
-        chrome.storage.sync.set({'appsOrder': arr});
+        STORAGE.set({'appsOrder': arr});
     };
 
     this.getGridReference = function (id) {
