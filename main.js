@@ -32,14 +32,16 @@ $(document).ready(function() {
         chrome.management.launchApp($(this).attr('id'));
 
         if (!$(this).hasClass('disabled')) {
-            chrome.tabs.query({}, function(result) {
-                // only auto-close when there is more then 1 tab in the browser window
-                if (result.length > 1) {
-                    chrome.tabs.getCurrent(function(tab) {
-                        chrome.tabs.remove(tab.id);
-                    });
-                }
-            });
+            if (CONFIGURATION.data.options.closeTabOnAppClick) {
+                chrome.tabs.query({}, function(result) {
+                    // only auto-close when there is more then 1 tab in the browser window
+                    if (result.length > 1) {
+                        chrome.tabs.getCurrent(function(tab) {
+                            chrome.tabs.remove(tab.id);
+                        });
+                    }
+                });
+            }
         } else {
             chrome.tabs.update({'url': 'chrome://extensions/'});
         }
@@ -158,13 +160,13 @@ $(document).ready(function() {
         } else {
             // not saved yet, apply defaults
             CONFIGURATION.data.options = {
-                'version':                  1,
                 'topSitesVisible':          true,
                 'topSitesItemsMax':         15,
                 'appsExtensionsVisible':    true,
                 'sessionsVisible':          true,
                 'sessionsItemsMax':         5,
                 'bookmarksVisible':         true,
+                'closeTabOnAppClick':       true
             };
         }
 

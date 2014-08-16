@@ -13,6 +13,7 @@ $(document).ready(function () {
                 $('input.topSitesVisible').prop('checked', CONFIGURATION.data.options.topSitesVisible);
                 $('input.appsExtensionsVisible').prop('checked', CONFIGURATION.data.options.appsExtensionsVisible);
                 $('input.sessionsVisible').prop('checked', CONFIGURATION.data.options.sessionsVisible);
+                $('input.closeTabOnAppClick').prop('checked', CONFIGURATION.data.options.closeTabOnAppClick);
 
                 $('input.topSitesItemsMax').val(CONFIGURATION.data.options.topSitesItemsMax)
                     .next()
