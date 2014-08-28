@@ -180,10 +180,8 @@ $(document).ready(function() {
         }
 
         if (CONFIGURATION.data.options.sessionsVisible) {
-            if (window.navigator.appVersion.replace(/.*Chrome\/([0-9.]*).*/,"$1").split('.')[0] > 36) { // sessions api is active only from 37+
-                retrieve_recentlyClosed();
-                bind_sessions_events();
-            }
+            retrieve_recentlyClosed();
+            bind_sessions_events();
         }
 
         if (CONFIGURATION.data.options.bookmarksVisible) {
