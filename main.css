@@ -109,8 +109,6 @@ a:hover {
     margin: auto;
     margin-bottom: 50px;
 }
-    #top-pages .top-pages-wrapper {
-    }
     #top-pages .title {
         padding: 0 0 5px 0;
 
@@ -236,15 +234,17 @@ a:hover {
 
         width: 180px;
         height: 20px;
+        line-height: 20px;
 
         margin: 0 0 5px 0;
     }
     #recently-closed-pages .closed-site img {
         float: left;
-        margin: 3px 5px 0 0;
+        margin: 2px 5px 0 0;
     }
     #recently-closed-pages a {
         color: #585858;
+        white-space: nowrap;
     }
     #recently-closed-pages a:hover {
         color: black;

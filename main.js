@@ -371,8 +371,8 @@ $(document).ready(function() {
     function process_sessions(result) {
         function process_data(data, lastModified) {
             var short_name = data.title;
-            if (data.title.length > 20) {
-                short_name = data.title.slice(0, 19);
+            if (data.title.length > 18) {
+                short_name = data.title.slice(0, 17);
                 short_name += '...';
             }
 
