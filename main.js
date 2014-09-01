@@ -137,8 +137,8 @@ $(document).ready(function() {
     });
 
     $('div#top-pages .top-pages-wrapper').on('click', 'div.site a.disable', function() {
-        var element = $(this).parent();
-        var url = element.find('a:first').attr('href');
+        var element = $(this).parent(),
+            url = element.find('a:first').attr('href');
 
         if (CONFIGURATION.data.hiddenTopSites) {
             CONFIGURATION.data.hiddenTopSites.push(url);
@@ -376,8 +376,6 @@ $(document).ready(function() {
                 short_name += '...';
             }
 
-            // result[i].lastModified cannot be used because the returned value is wrong (investigate?)
-            // it seems that the returned value is in seconds, not milliseconds
             if (lastModified > time_limit && data.url.indexOf('http://') > -1) { // ignore chrome:// pages
                 var closed_site =
                     $('<div class="closed-site">\
@@ -393,10 +391,10 @@ $(document).ready(function() {
             // dump previous elements
             recently_closed_e.empty();
 
-            var display_n = result.length;
-            var current_time = new Date().getTime();
-            var time_limit = (current_time - (10 * 60000)) / 1000; // - 10 minutes in milliseconds
-            var sites_displayed = 0;
+            var display_n = result.length,
+                current_time = new Date().getTime(),
+                time_limit = (current_time - (10 * 60000)) / 1000, // - 10 minutes in milliseconds
+                sites_displayed = 0;
 
             if (display_n > CONFIGURATION.data.options.sessionsItemsMax) {
                 display_n = CONFIGURATION.data.options.sessionsItemsMax;
@@ -498,10 +496,10 @@ $(document).ready(function() {
         top_pages_e = $('div#top-pages .top-pages-wrapper');
 
     function center_top_pages() {
-        var container_w = top_pages_c.width();
-        var site_w = $('div.site', top_pages_c).outerWidth();
-        var row_elements_n = Math.floor(container_w / site_w);
-        var blank_space = container_w - (site_w * row_elements_n);
+        var container_w = top_pages_c.width(),
+            site_w = $('div.site', top_pages_c).outerWidth(),
+            row_elements_n = Math.floor(container_w / site_w),
+            blank_space = container_w - (site_w * row_elements_n);
 
         top_pages_e.css({'margin-left': (blank_space / 2)});
     }
@@ -510,10 +508,10 @@ $(document).ready(function() {
         apps_e = $('div#apps .apps-wrapper');
 
     function center_apps() {
-        var container_w = apps_c.width();
-        var app_w = $('div.app', apps_c).outerWidth();
-        var row_elements_n = Math.floor(container_w / app_w);
-        var blank_space = container_w - (app_w * row_elements_n);
+        var container_w = apps_c.width(),
+            app_w = $('div.app', apps_c).outerWidth(),
+            row_elements_n = Math.floor(container_w / app_w),
+            blank_space = container_w - (app_w * row_elements_n);
 
         apps_e.css({'margin-left': (blank_space / 2)});
     }
@@ -522,10 +520,10 @@ $(document).ready(function() {
         recently_closed_e = $('div#recently-closed-pages .recently-closed-pages-wrapper');
 
     function center_recently_closed() {
-        var container_w = recently_closed_c.width();
-        var site_w = $('div.closed-site', recently_closed_c).outerWidth();
-        var row_elements_n = Math.floor(container_w / site_w);
-        var blank_space = container_w - (site_w * row_elements_n);
+        var container_w = recently_closed_c.width(),
+            site_w = $('div.closed-site', recently_closed_c).outerWidth(),
+            row_elements_n = Math.floor(container_w / site_w),
+            blank_space = container_w - (site_w * row_elements_n);
 
         recently_closed_e.css({'margin-left': (blank_space / 2)});
     }
