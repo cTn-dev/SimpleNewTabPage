@@ -138,12 +138,13 @@ $(document).ready(function() {
 
     $('div#top-pages .top-pages-wrapper').on('click', 'div.site a.disable', function() {
         var element = $(this).parent(),
-            url = element.find('a:first').attr('href');
+            url = element.find('a:first').attr('href'),
+            hostname = get_hostname(url);
 
         if (CONFIGURATION.data.hiddenTopSites) {
-            CONFIGURATION.data.hiddenTopSites.push(url);
+            CONFIGURATION.data.hiddenTopSites.push(hostname);
         } else {
-            CONFIGURATION.data.hiddenTopSites = [url];
+            CONFIGURATION.data.hiddenTopSites = [hostname];
         }
 
         // remove element from UI
@@ -206,7 +207,7 @@ $(document).ready(function() {
                 process_topSites(result);
             });
         });
-    };
+    }
 
     function retrieve_apps(callback) {
         function order() {
@@ -253,7 +254,7 @@ $(document).ready(function() {
         };
 
         order();
-    };
+    }
 
     function retrieve_recentlyClosed(callback) {
         chrome.sessions.getRecentlyClosed(function(result) {
@@ -263,7 +264,7 @@ $(document).ready(function() {
 
             process_sessions(result);
         });
-    };
+    }
 
     function retrieve_bookmarks(callback) {
         chrome.bookmarks.getTree(function(result) {
@@ -272,7 +273,7 @@ $(document).ready(function() {
             if (callback) callback();
             process_bookmarks(result);
         });
-    };
+    }
 
 
     function process_topSites(result) {
@@ -287,7 +288,7 @@ $(document).ready(function() {
             for (var i = 0; i < display_n; i++) {
                 var display = true;
                 if (CONFIGURATION.data.hiddenTopSites) {
-                    if (CONFIGURATION.data.hiddenTopSites.indexOf(result[i].url) != -1) {
+                    if (CONFIGURATION.data.hiddenTopSites.indexOf(get_hostname(result[i].url)) != -1) {
                         display = false;
 
                         if (display_n < 20) display_n++;
@@ -315,7 +316,7 @@ $(document).ready(function() {
             center_top_pages();
             $('div#top-pages').fadeIn(100);
         }
-    };
+    }
 
     function process_appsExtensions(result) {
         if (CONFIGURATION.data.options.appsExtensionsVisible) {
@@ -366,24 +367,27 @@ $(document).ready(function() {
             center_apps();
             $('div#apps').fadeIn(100);
         }
-    };
+    }
 
     function process_sessions(result) {
         function process_data(data, lastModified) {
-            var short_name = data.title;
-            if (data.title.length > 18) {
-                short_name = data.title.slice(0, 17);
-                short_name += '...';
-            }
+            if (lastModified > time_limit && data.url.indexOf('chrome://') == -1) { // ignore chrome:// pages
+                if (!CONFIGURATION.data.hiddenTopSites || CONFIGURATION.data.hiddenTopSites.indexOf(get_hostname(data.url)) == -1) {
+                    var short_name = data.title;
 
-            if (lastModified > time_limit && data.url.indexOf('http://') > -1) { // ignore chrome:// pages
-                var closed_site =
-                    $('<div class="closed-site">\
-                        <img src="chrome://favicon/' + data.url + '" alt="" /><a href="' + data.url + '" title="' + data.title + '">' + short_name + '</a>\
-                    </div>');
+                    if (data.title.length > 18) {
+                        short_name = data.title.slice(0, 17);
+                        short_name += '...';
+                    }
 
-                $('div#recently-closed-pages .recently-closed-pages-wrapper').append(closed_site);
-                sites_displayed++;
+                    var closed_site =
+                        $('<div class="closed-site">\
+                            <img src="chrome://favicon/' + data.url + '" alt="" /><a href="' + data.url + '" title="' + data.title + '">' + short_name + '</a>\
+                        </div>');
+
+                    $('div#recently-closed-pages .recently-closed-pages-wrapper').append(closed_site);
+                    sites_displayed++;
+                }
             }
         }
 
@@ -415,11 +419,11 @@ $(document).ready(function() {
                 $('div#recently-closed-pages').fadeIn(100);
             }
         }
-    };
+    }
 
     function process_bookmarks(data) {
         //console.log(data);
-    };
+    }
 
     function bind_apps_events() {
         chrome.management.onInstalled.addListener(function(info) {
@@ -473,7 +477,7 @@ $(document).ready(function() {
                 }
             }
         });
-    };
+    }
 
     function bind_sessions_events() {
         chrome.sessions.onChanged.addListener(function() {
@@ -486,10 +490,15 @@ $(document).ready(function() {
             });
 
         });
-    };
+    }
 
     function bind_bookmarks_events() {
-    };
+    }
+
+    function get_hostname(url) {
+        var m = url.match(/^http(s?):\/\/[^/]+/);
+        return m ? m[0] : null;
+    }
 
 
     var top_pages_c = $('div#top-pages'),
