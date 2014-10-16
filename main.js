@@ -8,8 +8,7 @@ var CONFIGURATION = {
         'appsExtensions':   null,
         'appsOrder':        null,
         'appsHidden':       null,
-        'sessions':         null,
-        'bookmarks':        null,
+        'sessions':         null
     },
     'status': {
         'optionsChanged': false
@@ -26,6 +25,89 @@ $(document).ready(function() {
         center_top_pages();
         center_apps();
         center_recently_closed();
+    });
+
+    $('div#top-pages .top-pages-wrapper').on('contextmenu', 'div.site a', function (ev) {
+        var element = $(this).parent(),
+            url = $(this).attr('href'),
+            hostname = get_hostname(url);
+
+        var items = [
+            'Open link in new tab',
+            'Open link in new window',
+            'Open link in incognito window',
+            'Hide address from the list'
+        ];
+
+        var menu = new ContextMenu(ev, items, function (item) {
+            switch (item) {
+                case 0:
+                    chrome.tabs.create({'url': url});
+                    break;
+                case 1:
+                    chrome.windows.getCurrent(function (properties) {
+                        if (properties.state == 'maximized') {
+                            chrome.windows.create({
+                                'url':          url,
+                                'focused':      true
+                            }, function (newWindow) {
+                                chrome.windows.update(newWindow.id, {'state': 'maximized'});
+                            });
+                        } else {
+                            chrome.windows.create({
+                                'url':          url,
+                                'focused':      true,
+                                'width':        properties.width,
+                                'height':       properties.height,
+                                'left':         properties.left,
+                                'top':          properties.top
+                            });
+                        }
+                    });
+                    break;
+                case 2:
+                    // copy properties and position from current window
+                    chrome.windows.getCurrent(function (properties) {
+                        if (properties.state == 'maximized') {
+                            chrome.windows.create({
+                                'url':          url,
+                                'incognito':    true,
+                                'focused':      true
+                            }, function (newWindow) {
+                                // there is no way of maximizing the incognito window via current windows api implementation
+                                // sniff :'(
+                            });
+                        } else {
+                            chrome.windows.create({
+                                'url':          url,
+                                'incognito':    true,
+                                'focused':      true,
+                                'width':        properties.width,
+                                'height':       properties.height,
+                                'left':         properties.left,
+                                'top':          properties.top
+                            });
+                        }
+                    });
+                    break;
+                case 3:
+                    if (CONFIGURATION.data.hiddenTopSites) {
+                        CONFIGURATION.data.hiddenTopSites.push(hostname);
+                    } else {
+                        CONFIGURATION.data.hiddenTopSites = [hostname];
+                    }
+
+                    // save changes
+                    STORAGE.set({'hiddenTopSites': CONFIGURATION.data.hiddenTopSites});
+
+                    // remove element from UI
+                    element.remove();
+                    break;
+
+                default:
+                    console.log('Unknown contextmenu position selected');
+            }
+        });
     });
 
     $('div#apps .apps-wrapper').on('click', 'div.app', function() {
@@ -49,109 +131,45 @@ $(document).ready(function() {
         return false;
     });
 
-    $('div#apps .apps-wrapper').on('contextmenu', 'div.app', function(ev) {
-        // if one context menu already exists, remove it
-        if ($('div#contextMenu').length) {
-            $('div#contextMenu').remove();
-        }
+    $('div#apps .apps-wrapper').on('contextmenu', 'div.app', function (ev) {
+        var id = $(this).attr('id');
+        var items = [
+            'Hide',
+            $(this).hasClass('disabled') ? 'Enable' : 'Disable',
+            'Uninstall'
+        ];
 
-        var disable = $(this).hasClass('disabled') ? 'Enable' : 'Disable';
+        var menu = new ContextMenu(ev, items, function (item) {
+            switch (item) {
+                case 0:
+                    if (CONFIGURATION.data.appsHidden) {
+                        CONFIGURATION.data.appsHidden.push(id);
 
-        var contextMenu = $('\
-            <div id="contextMenu">\
-                <ul>\
-                    <li class="hide">Hide</li>\
-                    <li class="disable">' + disable + '</li>\
-                    <li class="uninstall">Uninstall</li>\
-                </ul>\
-            </div>\
-        ').css({'top': ev.clientY + 2, 'left': ev.clientX + 2}).data('id', $(this).attr('id'));
-
-        $('body').append(contextMenu);
-
-        function clickHandler(ev) {
-            if ($('div#contextMenu')[0]) {
-                if ($.contains($('div#contextMenu')[0], ev.target)) {
-                    var action = $(ev.target).attr('class'),
-                        id = $('div#contextMenu').data('id');
-
-                    switch (action) {
-                        case 'hide':
-                            if (CONFIGURATION.data.appsHidden) {
-                                CONFIGURATION.data.appsHidden.push(id);
-
-                            } else {
-                                CONFIGURATION.data.appsHidden = [id];
-                            }
-
-                            // remove element from UI
-                            $('#' + id).remove();
-
-                            // save changes
-                            STORAGE.set({'appsHidden': CONFIGURATION.data.appsHidden});
-                            break;
-                        case 'disable':
-                            if (!$('#' + id).hasClass('disabled')) {
-                                chrome.management.setEnabled(id, false, null);
-                            } else {
-                                chrome.management.setEnabled(id, true, null);
-                            }
-                            break;
-                        case 'uninstall':
-                            chrome.management.uninstall(id, {'showConfirmDialog': true}, null);
-                            break;
-
-                        default:
-                            console.log('Unknown contextmenu function selected');
+                    } else {
+                        CONFIGURATION.data.appsHidden = [id];
                     }
 
-                    $('div#contextMenu').remove();
-                    $(document).unbind('click mousewheel contextmenu', clickHandler);
-                } else if (!$(ev.target).is('div#contextMenu')) {
-                    $('div#contextMenu').remove();
-                    $(document).unbind('click mousewheel contextmenu', clickHandler);
-                }
-            } else {
-                $(document).unbind('click mousewheel contextmenu', clickHandler);
+                    // remove element from UI
+                    $('#' + id).remove();
+
+                    // save changes
+                    STORAGE.set({'appsHidden': CONFIGURATION.data.appsHidden});
+                    break;
+                case 1:
+                    if (!$('#' + id).hasClass('disabled')) {
+                        chrome.management.setEnabled(id, false, null);
+                    } else {
+                        chrome.management.setEnabled(id, true, null);
+                    }
+                    break;
+                case 2:
+                    chrome.management.uninstall(id, {'showConfirmDialog': true}, null);
+                    break;
+
+                default:
+                    console.log('Unknown contextmenu position selected');
             }
-        };
-
-        $(document).bind('click mousewheel contextmenu', clickHandler);
-        return false;
-    });
-
-    $('div#top-pages .top-pages-wrapper').on('mouseenter', 'div.site a:not(.disable)', function() {
-        var element = $(this).parent();
-        element.addClass('hovering');
-
-        setTimeout(function() {
-            if (element.hasClass('hovering')) {
-                element.addClass('editing');
-            }
-        }, 1500);
-    });
-
-    $('div#top-pages .top-pages-wrapper').on('mouseleave', 'div.site', function() {
-        var element = $(this);
-        element.removeClass('hovering editing')
-    });
-
-    $('div#top-pages .top-pages-wrapper').on('click', 'div.site a.disable', function() {
-        var element = $(this).parent(),
-            url = element.find('a:first').attr('href'),
-            hostname = get_hostname(url);
-
-        if (CONFIGURATION.data.hiddenTopSites) {
-            CONFIGURATION.data.hiddenTopSites.push(hostname);
-        } else {
-            CONFIGURATION.data.hiddenTopSites = [hostname];
-        }
-
-        // remove element from UI
-        element.remove();
-
-        // save changes
-        STORAGE.set({'hiddenTopSites': CONFIGURATION.data.hiddenTopSites});
+        });
     });
 
     // get settings
@@ -166,7 +184,6 @@ $(document).ready(function() {
                 'appsExtensionsVisible':    true,
                 'sessionsVisible':          true,
                 'sessionsItemsMax':         5,
-                'bookmarksVisible':         true,
                 'closeTabOnAppClick':       true
             };
         }
@@ -183,11 +200,6 @@ $(document).ready(function() {
         if (CONFIGURATION.data.options.sessionsVisible) {
             retrieve_recentlyClosed();
             bind_sessions_events();
-        }
-
-        if (CONFIGURATION.data.options.bookmarksVisible) {
-            retrieve_bookmarks();
-            bind_bookmarks_events();
         }
     });
 
@@ -266,16 +278,6 @@ $(document).ready(function() {
         });
     }
 
-    function retrieve_bookmarks(callback) {
-        chrome.bookmarks.getTree(function(result) {
-            CONFIGURATION.data.bookmarks = result;
-
-            if (callback) callback();
-            process_bookmarks(result);
-        });
-    }
-
-
     function process_topSites(result) {
         if (CONFIGURATION.data.options.topSitesVisible) {
             var display_n = result.length,
@@ -306,7 +308,6 @@ $(document).ready(function() {
                         $('<div class="site">\
                             <img src="chrome://favicon/' + result[i].url + '" />\
                             <a href="' + result[i].url + '" title="' + result[i].title + '">' + short_name + '</a>\
-                            <a href="#" class="disable" title="Hide from the list"></a>\
                         </div>');
 
                     container.append(site);
@@ -421,10 +422,6 @@ $(document).ready(function() {
         }
     }
 
-    function process_bookmarks(data) {
-        //console.log(data);
-    }
-
     function bind_apps_events() {
         chrome.management.onInstalled.addListener(function(info) {
             if (info.isApp) {
@@ -490,9 +487,6 @@ $(document).ready(function() {
             });
 
         });
-    }
-
-    function bind_bookmarks_events() {
     }
 
     function get_hostname(url) {

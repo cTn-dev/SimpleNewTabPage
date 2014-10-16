@@ -90,18 +90,6 @@ a:hover {
     #options-window a:hover {
         text-decoration: underline;
     }
-#bookmarks {
-    display: none;
-    width: 50%;
-
-    margin: auto;
-
-    margin-bottom: 25px;
-}
-    #bookmarks .title {
-        text-align: center;
-        font-weight: bold;
-    }
 #top-pages {
     display: none;
     width: 50%;
@@ -243,23 +231,23 @@ a:hover {
     #recently-closed-pages a:hover {
         color: black;
     }
-#contextMenu {
+.contextMenu {
     position: absolute;
 
-    width: 120px;
     padding: 10px 0 10px 0;
 
     color: black;
     cursor: default;
-    -webkit-user-select: none;
 
     background-color: white;
     border: 1px solid rgba(0, 0, 0, 0.30);
+
+    -webkit-user-select: none;
 }
-    #contextMenu li {
-        padding-left: 20px;
+    .contextMenu li {
+        padding: 0 20px 0 20px;
         line-height: 20px;
     }
-    #contextMenu li:hover {
+    .contextMenu li:hover {
         background-color: #d9d9d9;
     }
