@@ -406,12 +406,20 @@ $(document).ready(function() {
             }
 
             for (var i = 0; i < display_n; i++) {
-                if (result[i].tab) {
-                    process_data(result[i].tab, result[i].lastModified);
-                } else if (result[i].window) {
-                    for (var j = 0; j < result[i].window.tabs.length; j++) {
-                        process_data(result[i].window.tabs[j], result[i].lastModified);
+                if (sites_displayed < display_n) {
+                    if (result[i].tab) {
+                        process_data(result[i].tab, result[i].lastModified);
+                    } else if (result[i].window) {
+                        for (var j = 0; j < result[i].window.tabs.length; j++) {
+                            if (sites_displayed < display_n) {
+                                process_data(result[i].window.tabs[j], result[i].lastModified);
+                            } else {
+                                break;
+                            }
+                        }
                     }
+                } else {
+                    break;
                 }
             }
 
