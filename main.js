@@ -387,6 +387,16 @@ $(document).ready(function() {
                         </div>');
 
                     $('div#recently-closed-pages .recently-closed-pages-wrapper').append(closed_site);
+
+                    // attach timer that will hide the visited website when it runs out of time
+                    setTimeout(function () {
+                        closed_site.remove();
+
+                        if ($('div#recently-closed-pages .recently-closed-pages-wrapper .closed-site').length == 0) {
+                            $('div#recently-closed-pages').hide();
+                        }
+                    }, Math.floor((lastModified - time_limit) * 1000));
+
                     sites_displayed++;
                 }
             }
