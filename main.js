@@ -518,11 +518,11 @@ $(document).ready(function() {
 
     function center_top_pages() {
         var container_w = top_pages_c.width(),
-            site_w = $('div.site', top_pages_c).outerWidth(),
+            site_w = $('div.site', top_pages_c).outerWidth(true),
             row_elements_n = Math.floor(container_w / site_w),
             blank_space = container_w - (site_w * row_elements_n);
 
-        top_pages_e.css({'margin-left': (blank_space / 2)});
+        top_pages_e.css({'padding-left': Math.floor(blank_space / 2)});
     }
 
     var apps_c = $('div#apps'),
@@ -530,11 +530,18 @@ $(document).ready(function() {
 
     function center_apps() {
         var container_w = apps_c.width(),
-            app_w = $('div.app', apps_c).outerWidth(),
+            app_w = $('div.app:first', apps_c).outerWidth(true),
+            apps_n = $('div.app', apps_c).size(),
             row_elements_n = Math.floor(container_w / app_w),
-            blank_space = container_w - (app_w * row_elements_n);
+            blank_space;
 
-        apps_e.css({'margin-left': (blank_space / 2)});
+        if (apps_n > row_elements_n) {
+            blank_space = container_w - (app_w * row_elements_n);
+        } else {
+            blank_space = container_w - (app_w * apps_n);
+        }
+
+        apps_e.css({'padding-left': Math.floor(blank_space / 2)});
     }
 
     var recently_closed_c = $('div#recently-closed-pages'),
@@ -542,10 +549,10 @@ $(document).ready(function() {
 
     function center_recently_closed() {
         var container_w = recently_closed_c.width(),
-            site_w = $('div.closed-site', recently_closed_c).outerWidth(),
+            site_w = $('div.closed-site', recently_closed_c).outerWidth(true),
             row_elements_n = Math.floor(container_w / site_w),
             blank_space = container_w - (site_w * row_elements_n);
 
-        recently_closed_e.css({'margin-left': (blank_space / 2)});
+        recently_closed_e.css({'padding-left': Math.floor(blank_space / 2)});
     }
 });
