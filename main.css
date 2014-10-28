@@ -114,6 +114,10 @@ a:hover {
     }
     #top-pages .site img {
         float: left;
+
+        width: 16px;
+        height: 16px;
+
         margin: 2px 5px 0 0;
     }
     #top-pages a {
@@ -222,6 +226,10 @@ a:hover {
     }
     #recently-closed-pages .closed-site img {
         float: left;
+
+        width: 16px;
+        height: 16px;
+
         margin: 2px 5px 0 0;
     }
     #recently-closed-pages a {
