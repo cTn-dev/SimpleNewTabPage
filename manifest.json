@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "minimum_chrome_version": "37",
-    "version": "0.3",
+    "version": "0.3.1",
 
     "author": "cTn",
     "name": "Simple New Tab Page",
