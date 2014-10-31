@@ -72,35 +72,35 @@ a:hover {
 
     z-index: 100;
 }
-    #options-window .title {
-        text-align: center;
-        font-weight: bold;
-    }
-    #options-window input[type="checkbox"] {
-        vertical-align: middle;
-    }
-    #options-window .range {
-        line-height: 21px;
-        margin-bottom: 2px;
-    }
-    #options-window .range input[type="range"] {
-        float: left;
-        width: 80px;
+#options-window .title {
+    text-align: center;
+    font-weight: bold;
+}
+#options-window input[type="checkbox"] {
+    vertical-align: middle;
+}
+#options-window .range {
+    line-height: 21px;
+    margin-bottom: 2px;
+}
+#options-window .range input[type="range"] {
+    float: left;
+    width: 80px;
 
-        margin-right: 10px;
-    }
-    #options-window .range .amount {
-        float: left;
+    margin-right: 10px;
+}
+#options-window .range .amount {
+    float: left;
 
-        width: 20px;
-        margin-right: 10px;
+    width: 20px;
+    margin-right: 10px;
 
-        text-align: center;
-        font-weight: bold;
-    }
-    #options-window a:hover {
-        text-decoration: underline;
-    }
+    text-align: center;
+    font-weight: bold;
+}
+#options-window a:hover {
+    text-decoration: underline;
+}
 #top-pages {
     display: none;
     width: 50%;
@@ -108,46 +108,46 @@ a:hover {
     margin: auto;
     margin-bottom: 50px;
 }
-    #top-pages .title {
-        padding: 0 0 5px 0;
+#top-pages .title {
+    padding: 0 0 5px 0;
 
-        font-weight: bold;
-        text-align: center;
-    }
-    #top-pages .site {
-        float: left;
+    font-weight: bold;
+    text-align: center;
+}
+#top-pages .site {
+    float: left;
 
-        width: 170px;
-        height: 20px;
+    width: 170px;
+    height: 20px;
 
-        margin-bottom: 2px;
-        padding-right: 10px;
+    margin-bottom: 2px;
+    padding-right: 10px;
 
-        line-height: 20px;
-    }
-    #top-pages .site img {
-        float: left;
+    line-height: 20px;
+}
+#top-pages .site img {
+    float: left;
 
-        width: 16px;
-        height: 16px;
+    width: 16px;
+    height: 16px;
 
-        margin: 2px 5px 0 0;
-    }
-    #top-pages .site div {
-        float: left;
+    margin: 2px 5px 0 0;
+}
+#top-pages .site div {
+    float: left;
 
-        width: 145px;
+    width: 145px;
 
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
-    #top-pages .site a {
-        color: #585858;
-    }
-    #top-pages .site a:hover {
-        color: black;
-    }
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+#top-pages .site a {
+    color: #585858;
+}
+#top-pages .site a:hover {
+    color: black;
+}
 #apps {
     display: none;
     width: 54%;
@@ -155,99 +155,99 @@ a:hover {
     margin: auto;
     margin-bottom: 50px;
 }
-    #apps .apps-wrapper {
-        min-height: 330px;
-        max-height: 500px;
+#apps .apps-wrapper {
+    min-height: 330px;
+    max-height: 500px;
 
-        overflow-y: auto;
-    }
-    #apps .title {
-        padding: 0 0 5px 0;
+    overflow-y: auto;
+}
+#apps .title {
+    padding: 0 0 5px 0;
 
-        font-weight: bold;
-        text-align: center;
-    }
-    #apps .app {
-        float: left;
+    font-weight: bold;
+    text-align: center;
+}
+#apps .app {
+    float: left;
 
-        width: 135px;
-        height: 155px;
+    width: 135px;
+    height: 155px;
 
-        margin: 0 10px 10px 10px;
+    margin: 0 10px 10px 10px;
 
-        text-align: center;
-    }
-    #apps .app .wrapper {
-        position: relative;
+    text-align: center;
+}
+#apps .app .wrapper {
+    position: relative;
 
-        width: 135px;
-        height: 150px;
-    }
-    #apps .app .wrapper:hover {
-        cursor: pointer;
-    }
-    #apps .app img {
-        display: block;
-        margin: auto;
+    width: 135px;
+    height: 150px;
+}
+#apps .app .wrapper:hover {
+    cursor: pointer;
+}
+#apps .app img {
+    display: block;
+    margin: auto;
 
-        width: 128px;
-        height: 128px;
-    }
-    #apps .app span {
-        display: block;
+    width: 128px;
+    height: 128px;
+}
+#apps .app span {
+    display: block;
 
-        white-space: nowrap;
-        overflow: hidden;
-    }
-    #apps .app.disabled img {
-        opacity: 0.75;
-        -webkit-filter: grayscale(1.0);
-    }
+    white-space: nowrap;
+    overflow: hidden;
+}
+#apps .app.disabled img {
+    opacity: 0.75;
+    -webkit-filter: grayscale(1.0);
+}
 #recently-closed-pages {
     display: none;
     width: 50%;
     margin: auto;
 }
-    #recently-closed-pages .title {
-        padding: 0 0 5px 0;
+#recently-closed-pages .title {
+    padding: 0 0 5px 0;
 
-        font-weight: bold;
-        text-align: center;
-    }
-    #recently-closed-pages .closed-site {
-        float: left;
+    font-weight: bold;
+    text-align: center;
+}
+#recently-closed-pages .closed-site {
+    float: left;
 
-        width: 170px;
-        height: 20px;
+    width: 170px;
+    height: 20px;
 
-        margin-bottom: 2px;
-        padding-right: 10px;
+    margin-bottom: 2px;
+    padding-right: 10px;
 
-        line-height: 20px;
-    }
-    #recently-closed-pages .closed-site img {
-        float: left;
+    line-height: 20px;
+}
+#recently-closed-pages .closed-site img {
+    float: left;
 
-        width: 16px;
-        height: 16px;
+    width: 16px;
+    height: 16px;
 
-        margin: 2px 5px 0 0;
-    }
-    #recently-closed-pages .closed-site div {
-        float: left;
+    margin: 2px 5px 0 0;
+}
+#recently-closed-pages .closed-site div {
+    float: left;
 
-        width: 145px;
+    width: 145px;
 
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
-    #recently-closed-pages .closed-site a {
-        color: #585858;
-    }
-    #recently-closed-pages .closed-site a:hover {
-        color: black;
-    }
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+#recently-closed-pages .closed-site a {
+    color: #585858;
+}
+#recently-closed-pages .closed-site a:hover {
+    color: black;
+}
 .contextMenu {
     position: absolute;
 
@@ -261,10 +261,10 @@ a:hover {
 
     -webkit-user-select: none;
 }
-    .contextMenu li {
-        padding: 0 20px 0 20px;
-        line-height: 20px;
-    }
-    .contextMenu li:hover {
-        background-color: #d9d9d9;
-    }
+.contextMenu li {
+    padding: 0 20px 0 20px;
+    line-height: 20px;
+}
+.contextMenu li:hover {
+    background-color: #d9d9d9;
+}
