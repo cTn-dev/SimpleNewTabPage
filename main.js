@@ -301,7 +301,9 @@ $(document).ready(function() {
                     var site =
                         $('<div class="site">\
                             <img src="chrome://favicon/' + result[i].url + '" />\
-                            <a href="' + result[i].url + '" title="' + result[i].title + '">' + result[i].title + '</a>\
+                            <div>\
+                                <a href="' + result[i].url + '" title="' + result[i].title + '">' + result[i].title + '</a>\
+                            </div>\
                         </div>');
 
                     container.append(site);
@@ -370,7 +372,10 @@ $(document).ready(function() {
                 if (!CONFIGURATION.data.hiddenTopSites || CONFIGURATION.data.hiddenTopSites.indexOf(get_hostname(data.url)) == -1) {
                     var closed_site =
                         $('<div class="closed-site">\
-                            <img src="chrome://favicon/' + data.url + '" alt="" /><a href="' + data.url + '" title="' + data.title + '">' + data.title + '</a>\
+                            <img src="chrome://favicon/' + data.url + '" alt="" />\
+                            <div>\
+                                <a href="' + data.url + '" title="' + data.title + '">' + data.title + '</a>\
+                            </div>\
                         </div>');
 
                     $('div#recently-closed-pages .recently-closed-pages-wrapper').append(closed_site);

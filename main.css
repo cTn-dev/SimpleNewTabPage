@@ -115,18 +115,15 @@ a:hover {
         text-align: center;
     }
     #top-pages .site {
-        display: inline-block;
+        float: left;
 
         width: 170px;
         height: 20px;
 
-        padding: 0 10px 0 0;
+        margin-bottom: 2px;
+        padding-right: 10px;
 
         line-height: 20px;
-
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
     }
     #top-pages .site img {
         float: left;
@@ -136,10 +133,19 @@ a:hover {
 
         margin: 2px 5px 0 0;
     }
-    #top-pages a {
+    #top-pages .site div {
+        float: left;
+
+        width: 145px;
+
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    #top-pages .site a {
         color: #585858;
     }
-    #top-pages a:hover {
+    #top-pages .site a:hover {
         color: black;
     }
 #apps {
@@ -209,15 +215,15 @@ a:hover {
         text-align: center;
     }
     #recently-closed-pages .closed-site {
-        display: inline-block;
+        float: left;
 
-        width: 180px;
+        width: 170px;
         height: 20px;
-        line-height: 20px;
 
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
+        margin-bottom: 2px;
+        padding-right: 10px;
+
+        line-height: 20px;
     }
     #recently-closed-pages .closed-site img {
         float: left;
@@ -227,10 +233,19 @@ a:hover {
 
         margin: 2px 5px 0 0;
     }
-    #recently-closed-pages a {
+    #recently-closed-pages .closed-site div {
+        float: left;
+
+        width: 145px;
+
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    #recently-closed-pages .closed-site a {
         color: #585858;
     }
-    #recently-closed-pages a:hover {
+    #recently-closed-pages .closed-site a:hover {
         color: black;
     }
 .contextMenu {
