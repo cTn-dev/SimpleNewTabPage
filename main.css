@@ -117,11 +117,16 @@ a:hover {
     #top-pages .site {
         display: inline-block;
 
-        width: 180px;
+        width: 170px;
         height: 20px;
+
+        padding: 0 10px 0 0;
+
         line-height: 20px;
 
-        margin: 0 0 5px 0;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
     #top-pages .site img {
         float: left;
@@ -133,7 +138,6 @@ a:hover {
     }
     #top-pages a {
         color: #585858;
-        white-space: nowrap;
     }
     #top-pages a:hover {
         color: black;
@@ -211,7 +215,9 @@ a:hover {
         height: 20px;
         line-height: 20px;
 
-        margin: 0 0 5px 0;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
     #recently-closed-pages .closed-site img {
         float: left;
@@ -223,7 +229,6 @@ a:hover {
     }
     #recently-closed-pages a {
         color: #585858;
-        white-space: nowrap;
     }
     #recently-closed-pages a:hover {
         color: black;

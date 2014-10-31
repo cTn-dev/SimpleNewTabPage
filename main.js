@@ -298,16 +298,10 @@ $(document).ready(function() {
                 }
 
                 if (display) {
-                    var short_name = result[i].title;
-                    if (result[i].title.length > 20) {
-                        short_name = result[i].title.slice(0, 19);
-                        short_name += '...';
-                    }
-
                     var site =
                         $('<div class="site">\
                             <img src="chrome://favicon/' + result[i].url + '" />\
-                            <a href="' + result[i].url + '" title="' + result[i].title + '">' + short_name + '</a>\
+                            <a href="' + result[i].url + '" title="' + result[i].title + '">' + result[i].title + '</a>\
                         </div>');
 
                     container.append(site);
@@ -374,16 +368,9 @@ $(document).ready(function() {
         function process_data(data, lastModified) {
             if (lastModified > time_limit && data.url.indexOf('chrome://') == -1) { // ignore chrome:// pages
                 if (!CONFIGURATION.data.hiddenTopSites || CONFIGURATION.data.hiddenTopSites.indexOf(get_hostname(data.url)) == -1) {
-                    var short_name = data.title;
-
-                    if (data.title.length > 18) {
-                        short_name = data.title.slice(0, 17);
-                        short_name += '...';
-                    }
-
                     var closed_site =
                         $('<div class="closed-site">\
-                            <img src="chrome://favicon/' + data.url + '" alt="" /><a href="' + data.url + '" title="' + data.title + '">' + short_name + '</a>\
+                            <img src="chrome://favicon/' + data.url + '" alt="" /><a href="' + data.url + '" title="' + data.title + '">' + data.title + '</a>\
                         </div>');
 
                     $('div#recently-closed-pages .recently-closed-pages-wrapper').append(closed_site);
