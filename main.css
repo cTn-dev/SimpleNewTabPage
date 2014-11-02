@@ -197,6 +197,7 @@ a:hover {
     display: block;
 
     white-space: nowrap;
+    text-overflow: ellipsis;
     overflow: hidden;
 }
 #apps .app.disabled img {
