@@ -28,7 +28,7 @@ $(document).ready(function() {
     });
 
     $('div#top-pages .top-pages-wrapper').on('contextmenu', 'div.site a', function (ev) {
-        var element = $(this).parent(),
+        var element = $(this).closest('.site'),
             url = $(this).attr('href'),
             hostname = get_hostname(url);
 
