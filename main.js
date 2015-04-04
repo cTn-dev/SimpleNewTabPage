@@ -280,24 +280,18 @@ $(document).ready(function() {
 
     function process_topSites(result) {
         if (CONFIGURATION.data.options.topSitesVisible) {
-            var display_n = result.length,
-                container = $('div#top-pages .top-pages-wrapper');
+            var itemsLength = result.length;
+            var container = $('div#top-pages .top-pages-wrapper');
+            var displayedLength = 0;
 
-            if (display_n > CONFIGURATION.data.options.topSitesItemsMax) {
-                display_n = CONFIGURATION.data.options.topSitesItemsMax;
-            }
+            for (var i = 0; i < itemsLength; i++) {
+                var hide = false;
 
-            for (var i = 0; i < display_n; i++) {
-                var display = true;
                 if (CONFIGURATION.data.hiddenTopSites) {
-                    if (CONFIGURATION.data.hiddenTopSites.indexOf(get_hostname(result[i].url)) != -1) {
-                        display = false;
-
-                        if (display_n < 20) display_n++;
-                    }
+                    if (CONFIGURATION.data.hiddenTopSites.indexOf(get_hostname(result[i].url)) != -1) hide = true;
                 }
 
-                if (display) {
+                if (!hide) {
                     var site =
                         $('<div class="site">\
                             <img src="chrome://favicon/' + result[i].url + '" />\
@@ -307,7 +301,10 @@ $(document).ready(function() {
                         </div>');
 
                     container.append(site);
+                    displayedLength++;
                 }
+
+                if (displayedLength >= CONFIGURATION.data.options.topSitesItemsMax) break;
             }
 
             center_top_pages();
